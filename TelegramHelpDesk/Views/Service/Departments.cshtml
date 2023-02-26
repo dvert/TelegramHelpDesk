@@ -1,0 +1,115 @@
+﻿@model TelegramHelpDesk.Models.Department
+@using TelegramHelpDesk.Models
+@{
+    ViewBag.Title = "Отделы";
+}
+<link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("/Content/PagedList.css")" rel="stylesheet" type="text/css" />
+
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/js/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryui")
+
+}
+<style type="text/css">
+    #contentposition {
+        position: absolute;
+        padding: 20px;
+        top: 82px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+        overflow: hidden;
+    }
+</style>
+
+<div id="contentposition">
+    <div class="page-header" style="margin-top: -15px;">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            <fieldset>
+                <legend>Новый отдел</legend>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Name)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Name)
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+
+                <p><input type="submit" value="Сохранить" /></p>
+            </fieldset>
+        }
+        <table>
+            @foreach (Department item in ViewBag.Departments)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@Html.ActionLink("Удалить", "DeleteDepartment", new { id = item.Id })</td>
+                </tr>
+            }
+        </table>
+    </div>
+    </div>
+    @Styles.Render("~/Content/themes/base/css")

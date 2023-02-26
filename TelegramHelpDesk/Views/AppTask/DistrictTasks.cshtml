@@ -1,0 +1,267 @@
+﻿@model PagedList.IPagedList<AppTask>
+@using System.Data.Entity
+@using PagedList.Mvc;
+@using TelegramHelpDesk.Models
+
+@{
+    ViewBag.Title = "Заявки района";
+    int i = 0; //счетчик
+    HelpdeskContext db = new HelpdeskContext();
+    //User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+    //var role = Roles.GetRolesForUser(user.Login).GetValue(0).ToString();
+}
+
+<h2>Заявки района</h2>
+
+<link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("/Content/PagedList.css")" rel="stylesheet" type="text/css" />
+
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/js/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryui")
+
+    <script type="text/javascript">
+        var MyHOSTNAME = "http://localhost/";
+        var MyLANG = "ru";
+    </script>
+
+}
+<style type="text/css">
+    #contentposition {
+        position: absolute;
+        padding: 20px;
+        top: 82px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+        overflow: hidden;
+    }
+</style>
+<div id="contentposition">
+
+    <div class="container">
+        <div class="page-header" style="margin-top: -15px;">
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <h3><i class="fa fa-list-alt"></i> Список моих заявок</h3><span class="text-muted">
+
+                    </span>
+                </div>
+
+                <div class="col-md-3" style="padding-top:20px;" align="right">
+                    <form action="http://localhost/list" method="get">
+                        <div class="input-group">
+
+                            <input name="t" type="text" class="form-control  input-sm" id="input_find" data-toggle="tooltip" data-placement="bottom" title="Введите # или тему заявки, или текст заявки, или текст комментария">
+                            <input name="find" type="hidden">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default  btn-sm" type="submit" title="Нажмите для поиска"
+                                        id="">
+                                    Поиск
+                                </button>
+                            </span>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+       
+        <div style="overflow: hidden;">
+            <div style="display: inline">
+                <div class="alert alert-info" style="float: left">
+                    <i class="fa fa-upload"></i>
+                    @Html.ActionLink("Исходящие", "DistrictTasks")
+                    <span></span>
+                </div>
+            <div class="alert alert-info" style="float: left">
+                @Html.ActionLink("В работе", "inprogressDistrict_Tasks")
+                <span></span>
+            </div>
+                <div class="alert alert-info" style="float: left">
+                    <i class="fa fa-archive"> </i>
+                    @Html.ActionLink("Архив", "archDistrict_Tasks")
+                </div>
+            </div>
+        </div>
+            <br>
+
+
+            <input type="hidden" value="1" id="val_menu">
+            <input type="hidden" value="1" id="user_id">
+            <input type="hidden" value="" id="total_tickets">
+            <input type="hidden" value="" id="last_total_tickets">
+
+            <table class="table table-bordered table-hover" style=" font-size: 14px; ">
+                <thead>
+                    <tr>
+                        <th>
+                            <div style="text-align: center;"><div id="sort_id" action="">#</div></div>
+                        </th>
+                        <th><div style="text-align: center;"><div id="sort_prio" action=""><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="Приоритет"></i></div></div></th>
+                        <th><div style="text-align: center;"><div id="sort_subj" style="width:auto" action="">Тема</div></div></th>
+                        <th><div style="text-align: center;">Создана</div></th>
+                        <th><div style="text-align: center;"><div id="sort_init" action="">Автор</div></div></th>
+                        <th><div style="text-align: center;">Исполнитель</div></th>
+                        <th><div style="text-align: center;">Статус</div></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+
+                        <tr id="tr_1" class="">
+                            <td style="vertical-align: middle;">
+                                <small class="">
+                                    <div style="text-align: center;">@Html.DisplayFor(modelItem => item.Number)</div>
+                                </small>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <small class="">
+                                    @if (item.Priority == (int)RequestPriority.Low)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary" data-toggle="tooltip" data-placement="bottom" title="Низкий приоритет"><i class="fa fa-arrow-down"></i></span></div>
+                                    }
+                                    else if (item.Priority == (int)RequestPriority.Medium)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-info" data-toggle="tooltip" data-placement="bottom" title="Средний приоритет"><i class="fa fa-minus"></i></span></div>
+                                    }
+                                    else if (item.Priority == (int)RequestPriority.High)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-danger" data-toggle="tooltip" data-placement="bottom" title="Высокий приоритет"><i class="fa fa-arrow-up"></i></span></div>
+                                    }
+
+                                </small>
+                            </td>
+                            <td style="vertical-align: middle;"><a class="" data-toggle="tooltip" data-placement="bottom" href="../AppTask/TaskView/@item.Id"> @Html.DisplayFor(modelItem => item.Subject)</a></td>
+                            <td style="vertical-align: middle;">
+                                <small class="">
+                                    <div style="text-align: center;">@Html.DisplayFor(modelItem => item.Lifecycle.Opened)</div>
+                                </small>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                    <div>
+                                        <small class="">@Html.DisplayName(db.Districts.Where(r => r.DistrictId == item.CreateDistrictId).Select(r => r.DistrictName).FirstOrDefault())</small>
+                                    </div>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <small class="">
+                                    <div class="">@Html.DisplayFor(modelItem => item.Executor.Name)</div>
+                                </small>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <small>
+                                    @if (item.Status == (int)RequestStatus.Opened)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> ожидания действия</span></div>
+                                    }
+
+                                    else if (item.Status == (int)RequestStatus.Proccesing)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> в процессе</span></div>
+                                    }
+                                    else if (item.Status == (int)RequestStatus.Checking)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> на проверке</span></div>
+                                    }
+                                    else if (item.Status == (int)RequestStatus.Closed)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> закрыта</span></div>
+                                    }
+                                </small>
+                            </td>
+                            @*if (item.Executor == null)
+                            {
+                                <td>
+                                    @Html.ActionLink("Назначить себе", "Assign", new { id = item.Id })
+                                </td>
+
+                            }*@
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+        <div style="text-align: center;">
+            @Html.PagedListPager(Model, page => Url.Action("DistrictTasks", new { page }),
+                                new PagedListRenderOptions
+                                {
+                                    LinkToFirstPageFormat = "<<",
+                                    LinkToPreviousPageFormat = "Назад",
+                                    LinkToNextPageFormat = "Вперед",
+                                    LinkToLastPageFormat = ">>"
+                                })
+        </div>
+
+
+
+    </div>

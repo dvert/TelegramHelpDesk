@@ -1,0 +1,417 @@
+﻿@using TelegramHelpDesk.Models
+@using System.Web.Mvc.Html
+@model TelegramHelpDesk.Models.AppTask
+
+@{
+    ViewBag.Title = "Новая заявка";
+    HelpdeskContext db = new HelpdeskContext();
+    User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+    var executors = db.Users.Where(e => e.DepartmentId == user.DepartmentId).ToList();
+    var offices = ViewBag.Offices;
+
+}
+
+
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<style type="text/css" media="all">
+    .chosen-rtl .chosen-drop {
+        left: -9000px;
+    }
+</style>
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+
+@section Scripts{
+
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+<script src="~/Scripts/jquery.cookie.js"></script>
+<script src="~/Scripts/js/bootbox.min.js"></script>
+<script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+<script src="~/Scripts/js/bootstrap-paginator.js"></script>
+<script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+<script src="~/Scripts/js/chosen.jquery.min.js"></script>
+<script src="~/Scripts/js/core.js"></script>
+<script src="~/Scripts/js/core_admin.js"></script>
+<script src="~/Scripts/js/daterangepicker.js"></script>
+<script src="~/Scripts/js/highcharts.js"></script>
+<script src="~/Scripts/js/ion.sound.min.js"></script>
+<script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+<script src="~/Scripts/js/jquery.autosize.min.js"></script>
+<script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+<script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+<script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+<script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+<script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+<script src="~/Scripts/js/jquery.fileupload.js"></script>
+<script src="~/Scripts/js/jquery.form.js"></script>
+<script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+<script src="~/Scripts/js/jquery.multi-select.js"></script>
+<script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+<script src="~/Scripts/js/jquery.titlealert.js"></script>
+<script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+<script src="~/Scripts/js/jquery.zclip.min.js"></script>
+<script src="~/Scripts/js/moment-with-langs.js"></script>
+<script src="~/Scripts/js/moment.min.js"></script>
+<script src="~/Scripts/js/prettyCheckable.min.js"></script>
+<script src="~/Scripts/js/load-image.min.js"></script>
+<script src="~/Scripts/js/bootstrap.js"></script>
+<script src="~/Scripts/js/bootstrap.min.js"></script>
+<script src="~/Scripts/js/bootstrap-editable.js"></script>
+<script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+<script src="~/Scripts/js/select2.min.js"></script>
+
+<script type="text/javascript">
+    var MyHOSTNAME = "http://localhost/";
+    var MyLANG = "ru";
+</script>
+
+
+
+    <script>
+        $(function() {
+            $("#TabsSet1").tabs();
+        });
+    </script>
+
+<script type="text/javascript">
+    $(function() {
+        $('#district').change(function() {
+
+            var id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetOfficeItems")/' + id,
+                success: function(data) {
+                    $('#office').replaceWith(data);
+                }
+            });
+        });
+    });
+</script>
+    }
+<style type="text/css">
+    #contentposition {
+        position:absolute;
+        padding: 20px;
+        top: 50px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+
+        overflow-x:hidden;
+    }
+</style>
+
+<div id="contentposition">
+
+<div class="container" id="form_add">
+
+<div class="row">
+    <div class="col-md-5">
+
+        <h3><i class="fa fa-tag"></i> Создание новой заявки
+        </h3>
+    </div>
+</div>
+<div id="TabsSet1">
+<ul>
+    <li><a href="#tab1">Для внутренних поручений</a></li>
+    <li><a href="#tab2">Для районов</a></li>
+</ul>
+        
+
+<div id="tab2">
+    @using (Html.BeginForm("NewTask", "AppTask", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <fieldset>
+            <div class="row">
+                <div class="col-md-8" id="div_new">
+                    <div class="panel panel-success" style="padding: 20px;">
+                        <div class="panel-body">
+                            <div class="form-horizontal" id="main_form" novalidate="" method="post">
+
+                                <div class="form-group">
+                                    <label for="subj" class="col-sm-2 control-label"><small>Район: </small></label>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("District", ViewBag.Districts as SelectList, "Выберите район", new { id = "district" })
+                                        @Html.ValidationMessageFor(model => model.District)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="subj" class="col-sm-2 control-label"><small>Офис: </small></label>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("Office", ViewBag.Offices as SelectList, "Выберите офис", new { id = "office" })
+                                        @Html.ValidationMessageFor(model => model.Office)
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="subj" class="col-sm-2 control-label"><small>Тема: </small></label>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("CategoryId", ViewBag.Categories as SelectList, "Выберите тему обращения", new { id = "category" })
+                                        @Html.ValidationMessageFor(model => model.CategoryId)
+                                    </div>
+                                </div>
+
+
+                                <div class="control-group">
+                                    <div class="form-group" id="for_msg">
+                                        <label for="msg" class="col-sm-2 control-label"><small>Описание:</small></label>
+                                        <div class="col-sm-10">
+                                            <textarea data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите подробно суть заявки</small>" placeholder="Суть заявки" class="form-control input-sm animated" name="Description" id="Description" rows="3" required="" data-validation-required-message="Укажите сообщение" aria-invalid="false"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="help-block"></div>
+                                </div>
+
+                                <div class="control-group" id="for_prio">
+                                    <div class="controls">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-2 control-label"><small>Приоритет: </small></label>
+                                            <div class="col-sm-10" style="padding-top: 5px;">
+
+                                                <div class="btn-group btn-group-justified">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-primary btn-xs active" id="prio_low"><i id="lprio_low" class="fa fa-check"></i>Низкий</button>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info btn-xs" id="prio_normal"><i id="lprio_norm" class=""></i> Средний</button>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-danger btn-xs" id="prio_high"><i id="lprio_high" class=""></i>Высокий</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="editor-label">
+                                    @Html.LabelFor(model => model.File)
+                                </div>
+                                <div class="editor-field">
+                                    <input type="file" id="error" name="error" />
+                                </div>
+
+
+
+                                <div class="form-group" id="for_to" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right">
+                                    <label for="to" class="col-md-2 control-label" data-toggle="tooltip" data-placement="top" title="Исполнитель заявки"><small>Исполнитель: </small></label>
+                                    <div class="col-md-4" style="" id="dsd" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите сотрудника</small>">
+                                        <div class="editor-field">
+                                            @Html.DropDownListFor(model => model.ExecutorId, ViewBag.Users as SelectList, "не выбран")
+                                            @Html.ValidationMessageFor(model => model.ExecutorId)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input id="prio" value="1" hidden="hidden" name="prio" />
+
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10" id="processing">
+                                <div class="btn-group btn-group-justified">
+                                    <div class="btn-group">
+                                        <button value="enter_districtTask" class="btn btn-success" type="submit" name="action"><i class="fa fa-check-circle-o"></i> Создать заявку</button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button value="reset_districtTask" class="btn btn-default" type="submit" name="action"><i class="fa fa-eraser"></i> Очистить поля</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+            </fieldset>
+                }
+</div>
+
+<div id="tab1">
+    @using (Html.BeginForm("Get", "AppTask", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <fieldset>
+            <div class="row">
+                <div class="col-md-8" id="div_new">
+                    <div class="panel panel-success" style="padding: 20px;">
+                        <div class="panel-body">
+                            <div class="form-horizontal" id="main_form" novalidate="" action="" method="post">
+
+
+                                <div class="form-group">
+                                    <label for="subj" class="col-sm-2 control-label"><small>Тема: </small></label>
+                                    <div class="editor-field">
+                                        @Html.DropDownList("CategoryId", ViewBag.Categories as SelectList, "Выберите тему обращения")
+                                        @Html.ValidationMessageFor(model => model.CategoryId)
+                                    </div>
+                                </div>
+
+
+                                <div class="control-group">
+                                    <div class="form-group" id="for_msg">
+                                        <label for="msg" class="col-sm-2 control-label"><small>Описание:</small></label>
+                                        <div class="col-sm-10">
+                                            <textarea data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите подробно суть заявки</small>" placeholder="Суть заявки" class="form-control input-sm animated" name="Description" id="Description" rows="3" required="" data-validation-required-message="Укажите сообщение" aria-invalid="false"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="help-block"></div>
+                                </div>
+
+                                <div class="control-group" id="for_prio">
+                                    <div class="controls">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-2 control-label"><small>Приоритет: </small></label>
+                                            <div class="col-sm-10" style="padding-top: 5px;">
+
+                                                <div class="btn-group btn-group-justified">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-primary btn-xs active" id="prio_low"><i id="lprio_low" class="fa fa-check"></i>Низкий</button>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-info btn-xs" id="prio_normal"><i id="lprio_norm" class=""></i> Средний</button>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" id="prio_high"><i id="lprio_high" class=""></i>Высокий</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="editor-label">
+                                    @Html.LabelFor(model => model.File)
+                                </div>
+                                <div class="editor-field">
+                                    <input type="file" id="error" name="error" />
+                                </div>
+
+                                <div class="form-group" id="for_to" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right">
+                                    <label for="to" class="col-md-2 control-label" data-toggle="tooltip" data-placement="top" title="Исполнитель заявки"><small>Исполнитель: </small></label>
+                                    <div class="col-md-4" style="" id="dsd" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите сотрудника</small>">
+                                        <div class="editor-field">
+                                            @Html.DropDownList("ExecutorId", ViewBag.Users as SelectList, "Выберите исполнителя")
+                                            @Html.ValidationMessageFor(model => model.ExecutorId)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <input id="prio" value="1" hidden="hidden" name="prio" />
+
+                            <div class="col-md-2"> </div>
+
+                            <div class="col-md-10" id="processing">
+                                <div class="btn-group btn-group-justified">
+                                    <div class="btn-group">
+                                        <button value="enter_departmentTask" class="btn btn-success" type="submit" name="action"><i class="fa fa-check-circle-o"></i> Создать заявку</button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button value="reset_departmentTask" class="btn btn-default" type="submit" name="action"><i class="fa fa-eraser"></i> Очистить поля</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br>
+            </div>
+            </fieldset>
+                }
+</div>
+</div>
+</div>
+</div>
+
+<script id="template-upload" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade" id="up_entry">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">
+                {% if (file.name.length>20) { %}
+                {%=file.name.substr(0,10) %}...{%=file.name.substr(-5) %}
+                {% } %}
+                {% if (file.name.length<20) { %}
+                                            {%=file.name%}
+                                            {% } %}
+
+            </p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+            <button id="s_start" class="btn btn-primary start btn-xs" disabled><i class="glyphicon glyphicon-upload"></i> загрузить                </button>
+            {% } %}
+            {% if (!i) { %}
+            <button class="btn btn-warning cancel btn-xs">
+                <i class="glyphicon glyphicon-ban-circle"></i>
+                <span>отменить</span>
+            </button>
+            {% } %}
+        </td>
+    </tr>
+    {% } %}
+</script>
+<!-- The template to display files available for download -->
+
+<script id="template-download" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.thumbnailUrl) { %}
+                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                {% if (file.name2.length>30) { %}
+                Файл: {%=file.name2.substr(0,30) %}...{%=file.name2.substr(-5) %} - загружен{% } %}
+                {% if (file.name2.length<30) { %}
+                                             Файл: {%=file.name2%} - загружен{% } %}
+
+            </p>
+
+            {% if (file.error) { %}
+            <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+            {% } %}
+        </td>
+        <td>
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td>
+            <p class="name">
+                <span class="label label-success"><i class="fa fa-check"></i> ok</span>
+            </p>
+        </td>
+    </tr>
+    {% } %}
+</script>

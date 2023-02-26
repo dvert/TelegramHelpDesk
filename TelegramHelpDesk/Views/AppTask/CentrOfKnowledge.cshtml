@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "Центр знаний";
+}
+
+<h2>PageView5</h2>
+
+<link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/js/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+
+}
+
+<style type="text/css">
+    #contentposition {
+        position: absolute;
+        padding: 20px;
+        top: 82px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+        overflow: hidden;
+    }
+</style>
+
+<div id="contentposition">
+    
+    <div class="container">
+        <input type="hidden" id="main_last_new_ticket" value="2017-12-15 14:38:40">
+        <div class="page-header" style="margin-top: -5px;">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3><i class="fa fa-globe"></i> Центр знаний</h3>
+                </div>
+	
+                <div class="col-md-6" style="padding-top: 25px;">                    <div class="input-group">
+                    <input type="text" class="form-control input-sm" id="find_helper" autofocus placeholder="Описание проблемы или вопросы...">
+                    <span class="input-group-btn">
+                        <button id="" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i> Найти</button>
+                    </span>
+                </div>	</div>
+                <div class="col-md-3" style="padding-top: 25px;">
+                    <button id="create_new_help" type="submit" class="btn btn-success btn-sm btn-block"><i class="fa fa-file-o"></i> создать новую запись</button>
+                </div>
+            </div>
+        </div>
+     
+        <div class="row" id="content_notes" style="padding-bottom: 25px;">
+
+            <div class="col-md-3">
+                <div class="alert alert-info" role="alert">
+                    <small>
+                        <i class="fa fa-info-circle"></i> 
+	      
+                        В данном разделе могут содержаться инструкции и документация для решения типичных проблем.      </small>
+                </div>
+            </div>
+            <div class="col-md-9" id="help_content">
+	
+	
+            </div>
+
+        </div>
+    </div>
+
+</div>

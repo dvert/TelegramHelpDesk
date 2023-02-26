@@ -15,16 +15,18 @@ namespace TelegramHelpDesk.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Страница для описания.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Страница для контактов.";
 
             return View();
         }
+
+
     }
 }

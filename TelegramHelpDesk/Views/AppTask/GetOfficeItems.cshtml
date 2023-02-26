@@ -1,0 +1,6 @@
+﻿@model List<TelegramHelpDesk.Models.District>
+<select id="office" name="Office">
+    @foreach (var item in Model) {
+        <option value="@item.Id">@item.OfficeName</option>
+    }
+</select>

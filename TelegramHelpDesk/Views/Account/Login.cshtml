@@ -1,0 +1,193 @@
+﻿@model TelegramHelpDesk.Models.LogViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    
+    <title>Вход в систему</title>
+
+    <link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="~/Scripts/helpdesk.js"></script>
+        <script src="~/Scripts/jquery-3.2.1.js"></script>
+        <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+        <script src="~/Scripts/jquery.cookie.js"></script>
+        <script src="~/Scripts/js/bootbox.min.js"></script>
+        <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+        <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+        <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+        <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+        <script src="~/Scripts/js/core.js"></script>
+        <script src="~/Scripts/js/core_admin.js"></script>
+        <script src="~/Scripts/js/daterangepicker.js"></script>
+        <script src="~/Scripts/js/highcharts.js"></script>
+        <script src="~/Scripts/js/ion.sound.min.js"></script>
+        <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+        <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+        <script src="~/Scripts/js/jquery.fileupload.js"></script>
+        <script src="~/Scripts/js/jquery.form.js"></script>
+        <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+        <script src="~/Scripts/js/jquery.multi-select.js"></script>
+        <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+        <script src="~/Scripts/js/jquery.titlealert.js"></script>
+        <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+        <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+        <script src="~/Scripts/js/moment-with-langs.js"></script>
+        <script src="~/Scripts/js/moment.min.js"></script>
+        <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+        <script src="~/Scripts/js/load-image.min.js"></script>
+        <script src="~/Scripts/js/bootstrap.js"></script>
+        <script src="~/Scripts/js/bootstrap.min.js"></script>
+        <script src="~/Scripts/js/bootstrap-editable.js"></script>
+        <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+        <script src="~/Scripts/js/select2.min.js"></script>
+        @Scripts.Render("~/bundles/jqueryui")
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    
+<style type="text/css">
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
+
+    .form-signin {
+        max-width: 360px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+    .form-signin .form-signin-heading,
+    .form-signin .checkbox {
+        margin-bottom: 10px;
+    }
+    .form-signin input[type="text"],
+    .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+    }
+    .form-signin .form-signin-heading,
+    .form-signin .checkbox {
+        margin-bottom: 10px;
+    }
+    .form-signin .checkbox {
+        font-weight: normal;
+    }
+    .form-signin .form-control {
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .form-signin .form-control:focus {
+        z-index: 2;
+    }
+    .form-signin input[type="text"] {
+        margin-bottom: -1px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+</style>
+</head>
+<body>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <div style="max-width: 360px; padding: 19px 29px 29px; margin: 0 auto 20px; background-color: #fff; border: 1px solid #e5e5e5; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05); -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05); box-shadow: 0 1px 2px rgba(0, 0, 0, .05);">
+
+        <form >
+
+            <div style="text-align: center;"><img src="~/Content/pictures/help-desk-icon.png" width="128">
+                <h2 class="text-muted">СИСТЕМА ЗАЯВОК</h2><small class="text-muted">Авторизация пользователя</small>
+            </div>
+            <br>
+
+            <div class="editor-label" style="padding-left: 75px;">
+                @Html.LabelFor(model => model.UserName)
+            </div>
+            <div class="editor-field" style="text-align: center; font-size: 16px; height: auto; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;">
+                @Html.EditorFor(model => model.UserName)
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+            <div class="editor-label" style="padding-left: 75px;">
+                @Html.LabelFor(model => model.Password)
+            </div>
+            <div class="editor-field" style="text-align: center; font-size: 16px; height: auto; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;">
+                @Html.EditorFor(model => model.Password)
+                @Html.ValidationMessageFor(model => model.Password)
+            </div>
+            <div style="padding-left: 75px;">
+
+                <div class="editor-field" padding="5px">
+                    @Html.EditorFor(model => model.RememberMe)
+                    <label> Запомнить меня</label>
+                </div>
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block" value="Войти" type="submit"> <i class="fa fa-sign-in"></i> Войти</button>
+
+        </form>
+    </div>
+}
+</body>
+</html>
+
+
+

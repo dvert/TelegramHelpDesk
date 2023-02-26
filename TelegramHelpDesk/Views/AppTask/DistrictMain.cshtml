@@ -1,0 +1,205 @@
+﻿@using TelegramHelpDesk.Models
+
+@{
+    ViewBag.Title = "Главная страница";
+    HelpdeskContext db = new HelpdeskContext();
+    User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+
+    //Пользователь
+    var in_progressUser = db.AppTasks.Where(r => r.Status == (int)RequestStatus.Proccesing).Count(r => r.CreateDistrictId == user.Id);
+    var out_goingUser = db.AppTasks.Where(r => r.Status == (int)RequestStatus.Opened).Count(r => r.CreateDistrictId == user.DistrictId);
+    var checkingUser = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId).Count(r => r.Status == (int)RequestStatus.Checking);
+
+    var role = Roles.GetRolesForUser(user.Login).GetValue(0).ToString();
+}
+
+<link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/js/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+
+}
+<style type="text/css">
+    #contentposition {
+        position: absolute;
+        padding: 20px;
+        top: 82px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+        overflow: hidden;
+    }
+</style>
+
+<div id="contentposition">
+    
+    
+    <div class="container" style="width: 95%">
+        <div class="page-header" style="margin-top: -15px;">
+            <h3><i class="fa fa-tachometer"></i> Главная страница</h3>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+
+                    <div class="alert alert-info alert-dismissable">
+
+                        <p>Приветствуем Вас в системе заявок!   <br /> Рекомендуем Вам посмотреть инструкции по работе с системой. <br /> Или @Html.ActionLink("создайте новую заявку", "DistrictNewTask") прямо сейчас!</p>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><a href="stats"><i class="fa fa-bar-chart-o"></i> Статистика заявок</a></div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                             @if (role == "Пользователь")
+                             {
+                                @*<div class="col-md-4 col-xs-4"><center>	<strong class="text-warning" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, которые распределены и выполняются"> @progress</strong><br><small><i class='fa fa-lock'></i> @Html.ActionLink("заявок в работе", "inprogressDistrict_Tasks") </small>	</center></div>
+
+                                <div class="col-md-4 col-xs-4"><center>	<strong class="text-primary" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, созданные Вами и остались не выполненными">@outtasks</strong><br><small><i class="fa fa-upload"></i> @Html.ActionLink("исходящие заявки", "DistrictTasks") </small> </center></div>*@
+
+                                <div class="col-md-4 col-xs-4"><center><strong class="text-danger" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Ваши заявки, находящиеся в работе">@in_progressUser</strong><br><small><i class="fa fa-download"></i> @Html.ActionLink("заявки в работе", "inprogressUser_Tasks") </small></center></div>
+
+                                <div class="col-md-4 col-xs-4"><center>	<strong class="text-warning" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, созданные Вами и остались не выполненными" id="d_label_2">@out_goingUser</strong><br><small><i class='fa fa-lock'></i> @Html.ActionLink("исходящие заявки", "outgoingUser_Tasks") </small>	</center></div>
+
+                                <div class="col-md-4 col-xs-4"><center>	<strong class="text-primary" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, требующие подтверждения для закрытия">@checkingUser</strong><br><small><i class="fa fa-upload"></i> @Html.ActionLink("заявок на проверке", "checkingUser_Tasks")</small>	</center></div>
+                             }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="col-md-12">
+
+                <div class="col-md-6">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><i class="fa fa-bullhorn"></i> Последние изменения</div>
+                        <div class="panel-body">
+
+
+
+                            <div id="last_news" style="max-height: 135px; overflow-y: scroll;"></div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a href="/AppTask/CentrOfKnowledge"><i class="fa fa-globe"></i> Последнее из Центра Знаний</a>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover" style="margin-bottom: 0px;" id="">
+                                <div id="" class="well well-large well-transparent lead">
+                                    <center>
+                                        Нет записей
+                                    </center>
+                                </div>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @*<div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="/AppTask/AllTasks"><i class="fa fa-list-alt"></i> Последние исходящие заявки</a><span class="pull-right">
+                        <div class="btn-group btn-group-xs">
+                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">5</button>
+                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">10</button>
+                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">15</button>
+                        </div>
+
+                    </span>
+                </div>
+                <div class="panel-body">
+
+                    <div id="spinner" class="well well-large well-transparent lead">
+                        <center><i class="fa fa-spinner fa-spin icon-2x"></i> Идет загрузка ...</center>
+                    </div>
+
+                    <div id="dashboard_t"></div>
+
+
+                </div>
+            </div>
+        </div>*@
+
+    </div>
+
+</div>

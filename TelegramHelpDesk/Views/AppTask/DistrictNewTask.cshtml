@@ -1,0 +1,212 @@
+﻿@using TelegramHelpDesk.Models
+@using System.Web.Mvc.Html
+@model TelegramHelpDesk.Models.AppTask
+
+@{
+    ViewBag.Title = "Новая заявка";
+    HelpdeskContext db = new HelpdeskContext();
+    User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+    var executors = db.Users.Where(e => e.DepartmentId == user.DepartmentId).ToList();
+    var offices = ViewBag.Offices;
+
+}
+
+
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<style type="text/css" media="all">
+    .chosen-rtl .chosen-drop {
+        left: -9000px;
+    }
+</style>
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+
+
+@section Scripts{
+
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/js/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+
+    <script type="text/javascript">
+        var MyHOSTNAME = "http://localhost/";
+        var MyLANG = "ru";
+    </script>
+
+
+<script type="text/javascript">
+    $(function() {
+        $('#district').change(function() {
+
+            var id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetOfficeItems")/' + id,
+                success: function(data) {
+                    $('#office').replaceWith(data);
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(function() {
+        $('#department').change(function() {
+
+            var id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetCategoryItems")/' + id,
+                success: function(data) {
+                    $('#category').replaceWith(data);
+                }
+            });
+        });
+    });
+</script>
+    }
+<style type="text/css">
+    #contentposition {
+        position:absolute;
+        padding: 20px;
+        top: 50px;
+        bottom: 0;
+        right: 0;
+        left: 200px;
+
+        overflow-x:hidden;
+    }
+</style>
+
+<div id="contentposition">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-5">
+
+                <h3>
+                    <i class="fa fa-tag"></i> Создание новой заявки
+                </h3>
+            </div>
+        </div>
+       
+
+             @using (Html.BeginForm("DistrictNewTask", "AppTask", FormMethod.Post, new { enctype = "multipart/form-data" }))
+             {
+        @Html.ValidationSummary(true)
+        <fieldset>
+
+
+            <div class="editor-label">
+                <label for="subj" class="col-sm-2 control-label"><small>Район: </small></label>
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("District", ViewBag.Districts as SelectList, "Выберите район", new { id = "district" })
+                @Html.ValidationMessageFor(model => model.District)
+            </div>
+
+            <div class="editor-label">
+                <label for="subj" class="col-sm-2 control-label"><small>Офис: </small></label>
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("Office", ViewBag.Offices as SelectList, "Выберите офис", new { id = "office" })
+                @Html.ValidationMessageFor(model => model.Office)
+            </div>
+
+            <div class="editor-label">
+                <label for="subj" class="col-sm-2 control-label"><small>Ответственный отдел: </small></label>
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("DepartmentId", ViewBag.Departments as SelectList, "Выберите отдел", new { id = "department" })
+                @Html.ValidationMessageFor(model => model.DepartmentId)
+            </div>
+
+
+            <div class="editor-label">
+                <label for="subj" class="col-sm-2 control-label"><small>Тема обращения: </small></label>
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("CategoryId", ViewBag.Categories as SelectList, "Выберите тему обращения", new { id = "category" })
+                @Html.ValidationMessageFor(model => model.CategoryId)
+            </div>
+
+
+
+            <div class="control-group">
+                <div class="form-group" id="for_msg">
+                    <label for="msg" class="col-sm-2 control-label"><small>Описание:</small></label>
+                    <div class="col-sm-10">
+                        <textarea data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите подробно суть заявки</small>" placeholder="Суть заявки" class="form-control input-sm animated" name="Description" id="Description" rows="3" required="" data-validation-required-message="Укажите сообщение" aria-invalid="false"></textarea>
+                    </div>
+                </div>
+                <div class="help-block"></div>
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.File)
+            </div>
+            <div class="editor-field">
+                <input type="file" id="error" name="error" />
+            </div>
+
+            <p>
+                <input type="submit" value="Сохранить заявку" />
+            </p>
+
+
+        </fieldset>
+    }
+            </div>
+
+          
+        </div>
+
+
+

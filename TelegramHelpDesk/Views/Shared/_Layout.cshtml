@@ -1,43 +1,166 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Ajax.Utilities
+@using TelegramHelpDesk.Models
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title – приложение ASP.NET</title>
-    @Styles.Render("~/Content/css")
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css?v=@DateTime.Now.Millisecond")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+
+
+    <link href="~/Content/Site.css?v=@DateTime.Now.Millisecond" rel="stylesheet" type="text/css" />
+
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/accordionMenu.js"></script>
+
 </head>
+@{
+    HelpdeskContext db = new HelpdeskContext();
+    User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+}
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
+    
+@*<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Имя приложения", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
-                    <li>@Html.ActionLink("О программе", "About", "Home")</li>
-                    <li>@Html.ActionLink("Контакт", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Create", "Create", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
             </div>
-        </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year – приложение ASP.NET</p>
-        </footer>
-    </div>
+</div>*@
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+<!-- В зависимости от роли пользователя устанавливаем определенное меню -->
+    @if (ViewContext.HttpContext.User.IsInRole("Администратор"))
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <h3>Вы вошли как: @Html.Label(user.Name)</h3>
+        </div>
+        <div id="menuposition">
+            <ul id="submenu">
+                <li>@Html.ActionLink("Главная страница", "Main", "AppTask")</li>
+                <li class="sub">
+                    <a>Администрирование</a>
+                    <ul>
+                        <li>@Html.ActionLink("Отделы", "Departments", "Service")</li>
+                        <li>@Html.ActionLink("Категории", "Categories", "Service")</li>
+                        <li>@Html.ActionLink("Районы и филиалы", "Districts", "Service")</li>
+                        @*<li>@Html.ActionLink("Журнал ошибок", "ErrorList", "Service")</li>*@
+                    </ul>
+                </li>
+                <li class="sub">
+                    <a>Заявки</a>
+                    <ul>
+                        <li>@Html.ActionLink("Все заявки", "AllTasks", "AppTask")</li>
+ 
+                        @*<li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>*@
+                    </ul>
+                </li>
+                <li class="sub">
+                    <a>Пользователи</a>
+                    <ul>
+                        <li>@Html.ActionLink("Добавить", "Create", "User")</li>
+                        <li>@Html.ActionLink("Список", "Index", "User")</li>
+                    </ul>
+                </li>
+                <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
+            </ul>
+        </div>
+    }
+    else if (ViewContext.HttpContext.User.IsInRole("Модератор"))
+    {
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <h2>Вы вошли как: @Html.Label(user.Name)</h2>
+        </div>
+            <div id="menuposition">
+                <ul id="submenu">
+                    <li>@Html.ActionLink("Главная страница", "Main", "AppTask")</li>
+                    <li class="sub">
+                        <a>Заявки</a>
+                        <ul>
+                            <li>@Html.ActionLink("Все заявки отдела", "AllTasks", "AppTask")</li>
+                            @*<li>@Html.ActionLink("Мои заявки", "MyTasks", "AppTask")</li>*@
+                          
+                            <li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>
+                        </ul>
+                    </li>
+                    <li class="sub">
+                        <a>Отчёты</a>
+                        <ul>
+                            <li><a>Отчёт - 1</a></li>
+                            <li><a>Отчёт - 2</a></li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Пользователи", "Index", "User")</li>
+                    <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
+                </ul>
+            </div>
+            }
+            else if (ViewContext.HttpContext.User.IsInRole("Исполнитель"))
+            {
+                <div class="navbar navbar-inverse navbar-fixed-top">
+                    <h3>Вы вошли как: @Html.Label(user.Name)</h3>
+                </div>
+            <div id="menuposition">
+                <ul id="submenu">
+                    <li>@Html.ActionLink("Главная страница", "Main", "AppTask")</li>
+                    <li class="sub">
+                        <a>Заявки</a>
+                        <ul>
+                            <li>@Html.ActionLink("Все заявки", "AllTasks", "AppTask")</li>
+                            <li>@Html.ActionLink("Мои заявки", "MyTasks", "AppTask")</li>
+                            <li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Центр знаний", "CentrOfKnowledge", "AppTask")</li>
+                    @*<li>@Html.ActionLink("Просмотр", "TaskView", "AppTask")</li>
+                    <li>@Html.ActionLink("MyTasks", "MyTasks", "AppTask")</li>
+                    <li>@Html.ActionLink("AllTasks", "AllTasks", "AppTask")</li>
+                    <li>@Html.ActionLink("NewTask", "NewTask", "AppTask")</li>*@
+                    @*<li>@Html.ActionLink("Пользователи", "Index", "User")</li>*@
+                    <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
+                </ul>
+            </div>
+    }
+    else if (ViewContext.HttpContext.User.IsInRole("Пользователь"))
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <h3>Вы вошли как: @Html.Label(user.Name)</h3>
+        </div>
+                <div id="menuposition">
+                    <ul id="submenu">
+                        <li>@Html.ActionLink("Главная страница", "DistrictMain", "AppTask")</li>
+                        <li class="sub">
+                            <a>Заявки</a>
+                            <ul>
+                                <li>@Html.ActionLink("Все заявки", "DistrictTasks", "AppTask")</li>
+                                <li>@Html.ActionLink("Новая", "DistrictNewTask", "AppTask")</li>
+                            </ul>
+                        </li>
+                        <li>@Html.ActionLink("Центр знаний", "CentrOfKnowledge", "AppTask")</li>
+                        <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
+                    </ul>
+                </div>
+    }
+
+            @RenderBody()
+
+            @RenderSection("scripts", required: false)
 </body>
 </html>

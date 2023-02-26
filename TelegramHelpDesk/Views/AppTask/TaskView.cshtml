@@ -1,0 +1,562 @@
+﻿@using System.Web.Mvc.Ajax
+@using System.Web.Mvc.Html
+@using TelegramHelpDesk.Models
+@model TelegramHelpDesk.Models.AppTask
+
+@{
+    ViewBag.Title = "Просмотр заявки";
+    HelpdeskContext db = new HelpdeskContext();
+    User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
+    var executors = db.Users.Where(r => r.DepartmentId == user.DepartmentId).Where(r => r.Role.Name.ToString() != "Модератор").ToList();
+    Lifecycle life = db.Lifecycles.Find(Model.LifecycleId);
+    var role = Roles.GetRolesForUser(user.Login).GetValue(0).ToString();
+
+}
+
+
+<link href="~/Content/themes/chosen.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/prettyCheckable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/print.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/style.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/uploadfile.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-noscript.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload-ui.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/jquery.fileupload.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/summernote-bs3.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/select2-bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/themes/base/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/js/bootbox.min.js"></script> 
+    <script src="~/Scripts/js/bootstrap-datepicker.ua.js"></script>
+    <script src="~/Scripts/js/bootstrap-paginator.js"></script>
+    <script src="~/Scripts/js/canvas-to-blob.min.js"></script>
+    <script src="~/Scripts/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/core.js"></script>
+    <script src="~/Scripts/js/core_admin.js"></script>
+    <script src="~/Scripts/js/daterangepicker.js"></script>
+    <script src="~/Scripts/js/highcharts.js"></script>
+    <script src="~/Scripts/js/ion.sound.min.js"></script>
+    <script src="~/Scripts/js/jqBootstrapValidation.js"></script>
+    <script src="~/Scripts/js/jquery.autosize.min.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-image.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-jquery-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-process.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-ui.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload-validate.js"></script>
+    <script src="~/Scripts/js/jquery.fileupload.js"></script>
+    <script src="~/Scripts/js/jquery.form.js"></script>
+    <script src="~/Scripts/js/jquery.iframe-transport.js"></script>
+    <script src="~/Scripts/js/jquery.multi-select.js"></script>
+    <script src="~/Scripts/js/jquery.noty.packaged.min.js"></script>
+    <script src="~/Scripts/js/jquery.titlealert.js"></script>
+    <script src="~/Scripts/js/jquery.uploadfile.min.js"></script>
+    <script src="~/Scripts/js/jquery.zclip.min.js"></script>
+    <script src="~/Scripts/js/moment-with-langs.js"></script>
+    <script src="~/Scripts/js/moment.min.js"></script>
+    <script src="~/Scripts/js/prettyCheckable.min.js"></script>
+    <script src="~/Scripts/js/load-image.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.js"></script>
+    <script src="~/Scripts/js/bootstrap-editable.min.js"></script>
+    <script src="~/Scripts/js/select2.min.js"></script>
+    
+    <script type="text/javascript">
+        var MyHOSTNAME = "http://localhost/";
+        var MyLANG = "ru";
+    </script>
+    
+}
+
+<div id="contentposition">
+
+   
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="panel panel-default" id="ticket_body">
+                    <div class="panel-heading">
+                        <table>
+                            <tr>
+                                <td style="width: 1000px;">
+                                    <h3 class="panel-title" style="display: inline;">
+                                        <i class="fa fa-ticket"></i> Заявка <strong>#@Html.DisplayFor(model => model.Number)</strong>
+                                    </h3>
+                                </td>
+                                <td style="width: 600px; text-align: right;">
+                                    <button id="print_now" href="print_ticket?5c44a1afc194dbab2f820a86e2137909" target="_blank" class="btn btn-default btn-xs"><i class="fa fa-print"></i> распечатать</button>
+                                    <button class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#myModal">
+                                        <i class="fa fa-pencil-square-o"></i> Сохранить
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50px;"><small><strong>Автор </strong></small></td>
+                                    <td>
+                                        @if (Model.CreateDistrictId != null)
+                                        {
+                                            <div>
+                                                <small class="">@Html.DisplayName(db.Districts.Where(r => r.DistrictId == Model.CreateDistrictId).Select(r => r.DistrictName).FirstOrDefault())</small>
+                                            </div>
+                                        }
+                                        else if (Model.CreateUserId != null)
+                                        {
+                                            <div>
+                                                <small class="">@Html.DisplayName(db.Users.Where(r => r.Id == Model.CreateUserId).Select(r => r.Name).FirstOrDefault())</small>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td style="width: 150px;"><small><strong> Была создана</strong></small></td>
+                                    <td style="width: 150px;"><small>@Html.DisplayFor(modelItem => life.Opened) </small></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50px;"><small><strong>Исполнитель </strong></small></td>
+                                    <td>
+                                        <small>
+                                            @if (Model.ExecutorId == null)
+                                            {
+                                                <div class=''>@Html.DisplayName("")</div>
+                                            }
+                                            else
+                                            {
+                                                <div class=''>@Html.DisplayName(db.Users.Where(r => r.Id == Model.ExecutorId).Select(r => r.Name).FirstOrDefault())</div>
+                                            }
+                                        </small>
+                                    </td>
+                                    <td style="width: 50px;"><small><strong>Редактировалось </strong></small></td>
+                                    <td><small> @Html.DisplayFor(model => model.LastUpdate) </small></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <small><strong>Район</strong></small>
+                                    </td>
+                                    <td class=""><small>@Html.DisplayFor(model => model.District)</small></td>
+                                    <td>
+                                        <small><strong>Статус</strong></small>
+                                    </td>
+                                    <td>
+                                        @if (Model.Status == (int)RequestStatus.Opened)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> ожидания действия</span></div>
+                                    }
+
+                                    else if (Model.Status == (int)RequestStatus.Proccesing)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> в процессе</span></div>
+                                    }
+                                    else if (Model.Status == (int)RequestStatus.Checking)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> на проверке</span></div>
+                                    }
+                                    else if (Model.Status == (int)RequestStatus.Closed)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary"><i class="fa fa-clock-o"></i> закрыта</span></div>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>
+                                    <small><strong>Центр</strong></small>
+                                </td>
+                                <td class=""><small>@Html.DisplayFor(model => model.Office)</small></td>
+
+
+                                <td>
+                                    <small><strong>Приоритет</strong></small>
+                                </td>
+                                <td>
+                                    @if (Model.Priority == (int)RequestPriority.Low)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-primary" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-arrow-down"> низкий приоритет</i></span></div>
+                                    }
+                                    else if (Model.Priority == (int)RequestPriority.Medium)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-info" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-minus"></i> средний приоритет</span></div>
+                                    }
+                                    else if (Model.Priority == (int)RequestPriority.High)
+                                    {
+                                        <div style="text-align: center;"><span class="label label-danger" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-arrow-up"> высокий приоритет</i></span></div>
+                                    }
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                    <link href="~/Content/themes/ticket_style.css" rel="stylesheet" type="text/css" />
+
+
+                    <div class="panel panel-default">
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50px;padding: 8px;border-right: 0px;"><small><strong>Описание заявки: </strong></small></td>
+                                    <td style="padding: 8px; border-left: 0px; border-right: 0px;">
+
+                                        <p>@Html.DisplayFor(model => model.Description)</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <hr style="margin:0px;">
+                        <div class="row" style="padding:10px;">
+                            <div class="col-md-3">
+                                <div style="text-align: center;"><small><strong>Прикреплённые файлы:</strong></small></div>
+                            </div>
+                            <div class="col-md-9">
+                                <table class="table table-hover">
+                                    <tbody>
+
+                                        <tr>
+                                            <td style="width:20px;">
+                                                @if (Model.File != null)
+                                                {
+                                                    <img src="../../Content/pictures/filey.png" class="tdImage" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="../../Content/pictures/filen.png" title="без файла изображения" class="tdImage" />
+                                                }
+                                            </td>
+
+                                            <td><a href="../../AppTask/Download/@Model.Id">@Html.DisplayFor(model => model.File)</a></td>
+
+                                        </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                       
+
+               @if (role == "Модератор")
+               {
+                   if (Model.ExecutorId == null)
+                   {
+                    <div class="col-md-12">
+                        <div id="ccc"></div>
+
+                        <hr style="margin-top: 0px; margin-bottom: 0px;">
+
+
+                        <div class="btn-group btn-group-justified">
+                            <div class="btn-group">
+                                <button id="action_refer_to" value="0" type="button" class="btn btn btn-danger"><i class="fa fa-share"></i> Назначить исполнителя</button>
+                            </div>
+                        </div>
+                    </div>
+
+                        <div id="refer_to" class="col-md-12 panel panel-default" style="padding: 10px; margin-top: 20px; margin-bottom: 0px;">
+
+                            <div class="form-group" id="t_for_to" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Укажите сотрудника</small>">
+                                <label for="to" class="col-sm-3 control-label"><small>Назначить: </small></label>
+
+
+                                @using (Html.BeginForm("Change_Executor", "AppTask", FormMethod.Post))
+                                {
+                                    <div class="col-sm-3" style="">
+                                        <select data-placeholder="Исполнитель" class="chosen-select form-control input-sm" id="t_users_do" name="unit_id">
+                                            @foreach (var item in executors)
+                                            {
+                                                <option></option>
+                                                <option>@Html.DisplayFor(model => item.Name)</option>
+                                            }
+                                        </select>
+
+
+                                    </div>
+
+                                    @Html.Hidden("requestId", Model.Id)
+                                    <div class="col-sm-1" style="">
+                                        <button value="1111" type="submit" class="btn btn-default btn-sm"><i class="fa fa-check"> </i></button>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+                        
+                   }
+
+               }
+               else if (role != "Пользователь")
+               {
+                   if (Model.Status != 4)
+                   {
+                       if (Model.ExecutorId == null)
+                       {
+                        <div class="col-md-12">
+                            <div id="ccc"></div>
+
+                            <hr style="margin-top: 0px; margin-bottom: 0px;">
+
+                            @using (Html.BeginForm("Assign", "AppTask", FormMethod.Post))
+                            {
+                                <div class="btn-group btn-group-justified">
+
+                                    @Html.Hidden("requestId", Model.Id)
+                                    <div class="btn-group">
+                                        <button type="submit" name="action" class="btn btn btn-danger"><i class="fa fa-share"></i> Назначить себе</button>
+                                    </div>
+
+
+
+                                </div>
+                            }
+                        </div>
+
+                       }
+                       else if (Model.ExecutorId != null)
+                       {
+                        <div class="col-md-12">
+                            <div id="ccc"></div>
+
+                            <hr style="margin-top: 0px; margin-bottom: 0px;">
+
+
+                            <div class="btn-group btn-group-justified">
+
+                                <div class="btn-group">
+                                    <button id="action_change_prio" value="0" type="button" class="btn btn btn-danger"><i class="fa fa-share"></i> Изменить приоритет</button>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button id="action_refer_to" value="0" type="button" class="btn btn btn-danger"><i class="fa fa-share"></i> Переадресовать</button>
+                                </div>
+
+                                <div class="btn-group">
+                                    @using (Html.BeginForm("EndTask", "AppTask", FormMethod.Post))
+                                    {
+
+                                        @Html.Hidden("requestId", Model.Id)
+
+
+                                        <button class="btn btn btn-danger" type="submit" name="action"><i class="fa fa-check"></i> Выполнено </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        ///////////////////////////////////////////////////////////
+
+                        <div id="refer_to" class="col-md-12 panel panel-default" style="padding: 10px; margin-top: 20px; margin-bottom: 0px;">
+
+                            <div class="form-group" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Переадресовать</small>">
+                                <label class="col-sm-3 control-label"><small>Назначить:</small></label>
+
+
+                                @using (Html.BeginForm("Change_Executor", "AppTask", FormMethod.Post))
+                                {
+                                    <div class="col-sm-3" style="">
+                                            <select data-placeholder="Исполнитель" class="chosen-select form-control input-sm" id="t_users_do" name="unit_id">
+                                                @foreach (var item in executors)
+                                                {
+                                                    <option></option>
+                                                    <option>@Html.DisplayFor(model => item.Name)</option>
+                                                }
+                                            </select>
+
+
+                                        </div>
+
+                                    @Html.Hidden("requestId", Model.Id)
+                                    <div class="col-sm-1" style="">
+                                        <button value="1111" type="submit" class="btn btn-default btn-sm"><i class="fa fa-check"> </i></button>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+
+                        //////////////////////////////////////////////////////////////////////////////
+
+                        <div id="change_prio" class="col-md-12 panel panel-default" style="padding: 10px; margin-top: 20px; margin-bottom: 0px;">
+
+                            <div class="form-group" data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="<small>Изменить приоритет</small>">
+                                <label class="col-sm-3 control-label"><small>Изменить:</small></label>
+
+
+                                @using (Html.BeginForm("Change_Priority", "AppTask", FormMethod.Post))
+                                {
+                                    <div class="col-sm-3" style="">
+                                        <select data-placeholder="Приоритет" class="chosen-select form-control input-sm" name="priority">
+                                          <option value="1">Низкий</option>
+                                            <option value="2">Средний</option>
+                                            <option value="3">Высокий</option>
+                                        </select>
+
+                                       
+                                    </div>
+
+                                    @Html.Hidden("requestId", Model.Id)
+                                    <div class="col-sm-1" style="">
+                                        <button value="1111" type="submit" class="btn btn-default btn-sm"><i class="fa fa-check"> </i></button>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+                       }
+                   }
+               }
+
+               else if (role == "Пользователь")
+               {
+
+                   if (Model.Status == (int)RequestStatus.Checking)
+                   {
+                    <div class="col-md-12">
+                        <div id="ccc"></div>
+
+                        <hr style="margin-top: 0px; margin-bottom: 0px;">
+
+
+                        <div class="btn-group btn-group-justified">
+
+                            <div class="btn-group">
+                                @using (Html.BeginForm("FinishEndTask", "AppTask", FormMethod.Post))
+                                {
+
+                                    @Html.Hidden("requestId", Model.Id)
+
+
+                                    <button class="btn btn btn-danger" type="submit" name="action"><i class="fa fa-check"></i> Выполнено </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                   }
+               }
+
+
+                <div class="tabbable hidden-print">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#home" data-toggle="tab"><i class="fa fa-comments-o"></i> Комментарии</a></li>
+                        <li><a href="#profile" data-toggle="tab"><i class="fa fa-list"></i> История изменений</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="home">
+                            <div class="col-md-12" style=" padding-left: 0px; padding-right: 0px; ">
+
+                                <div class="panel panel-default">
+
+                                    <div class="panel-body">
+
+                                        <div id="comment_content">
+
+
+                                            <div class="row" id="comment_body" style="max-height: 400px; overflow-y: scroll;">
+
+                                            </div>
+
+                                        </div>
+                                        <hr>
+
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <div class="form-group" id="for_msg">
+                                                    <label for="msg" class="col-sm-3 control-label"><small>Ваш комментарий:</small></label>
+                                                    @using (Html.BeginForm("AddComment", "AppTask", FormMethod.Post)) {
+
+                                                        @Html.Hidden("task", Model.Id)
+
+
+                                                        <div class="col-sm-12" style="">
+
+                                                        <textarea data-toggle="popover" data-html="true" data-trigger="manual" data-placement="right" data-content="&lt;small&gt;Укажите подробно суть заявки&lt;/small&gt;" placeholder="Комментарий к заявке" class="form-control input-sm animated" name="text" id="text" rows="1" required="" data-validation-required-message="Укажите сообщение" aria-invalid="false"></textarea>
+
+                                                    </div>
+
+                                              
+                                                        <div class="col-sm-12" style=""><button type="submit" name="action" class="btn btn-default btn-sm pull-right">Отправить</button>
+                                                            @*<div class="col-sm-12" style=""><button id="do_comment" user="1" value="1" type="submit" name="action" class="btn btn-default btn-sm pull-right">Отправить</button>*@
+                                                    </div>
+                                                }
+                                                </div>
+                                                <div class="help-block" style="margin:0px;"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile">
+                            <div class="col-md-12" style=" padding-left: 0px; padding-right: 0px; ">
+
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="max-height: 400px; overflow-y: scroll;">
+
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div style="text-align: center;" ><small>Дата</small></div>
+                                                    </th>
+                                                    <th>
+                                                        <div style="text-align: center;" ><small>Автор	</small></div></th>
+                                                    <th>
+                                                        <div style="text-align: center;" ><small>Действие 	</small></div></th>
+                                                    <th>
+                                                        <div style="text-align: center;" ><small>Описание	</small></div></th>
+
+
+                                                </tr>
+                                            </thead>
+
+                                            
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div></div></div>
