@@ -65,4 +65,4 @@
 
 *.js linguist-language=csharp
 #*.java linguist-detectable=false
-*.php linguist-detectable=false
+*.php linguist-language=csharp
