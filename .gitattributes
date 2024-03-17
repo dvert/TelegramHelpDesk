@@ -62,5 +62,5 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-*.cs     diff=csharp
-*.js linguist-vendored=false
+special-vendored-path/* linguist-vendored
+jquery.js linguist-vendored=false
