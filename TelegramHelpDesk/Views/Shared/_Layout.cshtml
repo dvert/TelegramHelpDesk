@@ -24,26 +24,6 @@
     User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
 }
 <body>
-    
-@*<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-        <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Create", "Create", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
-    </div>
-</div>*@
 
 <!-- В зависимости от роли пользователя устанавливаем определенное меню -->
     @if (ViewContext.HttpContext.User.IsInRole("Администратор"))
@@ -60,15 +40,12 @@
                         <li>@Html.ActionLink("Отделы", "Departments", "Service")</li>
                         <li>@Html.ActionLink("Категории", "Categories", "Service")</li>
                         <li>@Html.ActionLink("Районы и филиалы", "Districts", "Service")</li>
-                        @*<li>@Html.ActionLink("Журнал ошибок", "ErrorList", "Service")</li>*@
                     </ul>
                 </li>
                 <li class="sub">
                     <a>Заявки</a>
                     <ul>
                         <li>@Html.ActionLink("Все заявки", "AllTasks", "AppTask")</li>
- 
-                        @*<li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>*@
                     </ul>
                 </li>
                 <li class="sub">
@@ -94,9 +71,7 @@
                     <li class="sub">
                         <a>Заявки</a>
                         <ul>
-                            <li>@Html.ActionLink("Все заявки отдела", "AllTasks", "AppTask")</li>
-                            @*<li>@Html.ActionLink("Мои заявки", "MyTasks", "AppTask")</li>*@
-                          
+                            <li>@Html.ActionLink("Все заявки отдела", "AllTasks", "AppTask")</li>                        
                             <li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>
                         </ul>
                     </li>
@@ -128,12 +103,7 @@
                             <li>@Html.ActionLink("Новая", "NewTask", "AppTask")</li>
                         </ul>
                     </li>
-                    <li>@Html.ActionLink("Центр знаний", "CentrOfKnowledge", "AppTask")</li>
-                    @*<li>@Html.ActionLink("Просмотр", "TaskView", "AppTask")</li>
-                    <li>@Html.ActionLink("MyTasks", "MyTasks", "AppTask")</li>
-                    <li>@Html.ActionLink("AllTasks", "AllTasks", "AppTask")</li>
-                    <li>@Html.ActionLink("NewTask", "NewTask", "AppTask")</li>*@
-                    @*<li>@Html.ActionLink("Пользователи", "Index", "User")</li>*@
+                    <li>@Html.ActionLink("Справочная информация", "HelpInfo", "AppTask")</li>
                     <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
                 </ul>
             </div>
@@ -153,7 +123,7 @@
                                 <li>@Html.ActionLink("Новая", "DistrictNewTask", "AppTask")</li>
                             </ul>
                         </li>
-                        <li>@Html.ActionLink("Центр знаний", "CentrOfKnowledge", "AppTask")</li>
+                        <li>@Html.ActionLink("Справочная информация", "HelpInfo", "AppTask")</li>
                         <li>@Html.ActionLink("Выйти", "LogOff", "Account")</li>
                     </ul>
                 </div>

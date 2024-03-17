@@ -7,8 +7,6 @@
     ViewBag.Title = "Заявки района";
     int i = 0; //счетчик
     HelpdeskContext db = new HelpdeskContext();
-    //User user = db.Users.FirstOrDefault(m => m.Login == User.Identity.Name);
-    //var role = Roles.GetRolesForUser(user.Login).GetValue(0).ToString();
 }
 
 <h2>Заявки района</h2>
@@ -233,21 +231,10 @@
                                     }
                                 </small>
                             </td>
-                            @*if (item.Executor == null)
-                            {
-                                <td>
-                                    @Html.ActionLink("Назначить себе", "Assign", new { id = item.Id })
-                                </td>
-
-                            }*@
-
                         </tr>
                     }
                 </tbody>
             </table>
-
-
-
         </div>
 
 
@@ -261,7 +248,4 @@
                                     LinkToLastPageFormat = ">>"
                                 })
         </div>
-
-
-
     </div>

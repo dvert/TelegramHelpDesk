@@ -1,7 +1,6 @@
 ﻿using PagedList;
 using System;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -30,55 +29,6 @@ namespace TelegramHelpDesk.Controllers
             }
         }
 
-        //представление для создания новой заявки
-        //public ActionResult Create()
-        //{
-        //    // получаем текущего пользователя
-        //    User user = db.Users.FirstOrDefault(m => m.Login == HttpContext.User.Identity.Name);
-        //    Role role = db.Roles.FirstOrDefault(r => r.Id == user.RoleId);
-        //    if (user != null) {
-        //        var districts = db.Districts.GroupBy(d => d.DistrictName)
-        //            .Select(di => di.FirstOrDefault())
-        //            .ToList();
-        //        var categories = db.Categorys
-        //            .Where(c=>c.DepartmentId==user.DepartmentId)
-        //            .ToList();
-        //        if (role.Name == "Администратор") {
-
-        //            string selectedIndex = "г. Калуга"; /*db.Districts.Select(d=>d.DistrictName).First();*/
-
-        //            ViewBag.Districts = new SelectList(districts, "Id", "DistrictName", selectedIndex);
-
-        //            ViewBag.Offices = new SelectList(db.Districts.Where(c => c.DistrictName == selectedIndex), "Id", "OfficeName");
-        //            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-        //            ViewBag.Users = new SelectList(db.Users, "Id", "Name");
-        //        }
-        //        else if (role.Name == "Модератор") {
-                   
-        //            string selectedIndex = "г. Калуга"; //db.Districts.Select(d=>d.DistrictName).First();
-
-        //            ViewBag.Districts = new SelectList(districts, "Id", "DistrictName", selectedIndex);
-
-        //            ViewBag.Offices = new SelectList(db.Districts.Where(c => c.DistrictName == selectedIndex), "Id", "OfficeName");
-        //            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-        //            Department dept = db.Departments.FirstOrDefault(d => d.Id == user.DepartmentId);
-        //            ViewBag.Users = new SelectList(db.Users.Where(d=>d.DepartmentId == dept.Id), "Id", "Name");
-        //        }
-        //        else if (role.Name == "Исполнитель") {
-        //            string selectedIndex = "г. Калуга"; //db.Districts.Select(d=>d.DistrictName).First();
-
-        //            ViewBag.Districts = new SelectList(districts, "Id", "DistrictName", selectedIndex);
-
-        //            ViewBag.Offices = new SelectList(db.Districts.Where(c => c.DistrictName == selectedIndex), "Id", "OfficeName");
-        //            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-        //            Department dept = db.Departments.FirstOrDefault(d => d.Id == user.DepartmentId);
-        //            ViewBag.Users = new SelectList(db.Users.Where(d => d.DepartmentId == dept.Id), "Id", "Name");
-        //        }
-        //        return View();
-        //    }
-        //    return RedirectToAction("LogOff", "Account");
-        //}
-        //представление для выбора филиалов
         public ActionResult GetOfficeItems(Guid id) {
 
             District district = db.Districts.Find(id);
@@ -105,21 +55,18 @@ namespace TelegramHelpDesk.Controllers
             {
                 tasks = db.AppTasks.Select(r => r.Number).Max() + 1;
             }
-            // получаем текущего пользователя
+
             User user = db.Users.FirstOrDefault(m => m.Login == HttpContext.User.Identity.Name);
             if (user == null)
             {
                 return RedirectToAction("LogOff", "Account");
             }
-            //if (ModelState.IsValid)
-            //{
-            // присваиваем новый id заявке
+
             request.Id = Guid.NewGuid();
             request.Number = tasks;
             request.District = "нет";
             request.Office = "нет";
             var requestId = request.Id;
-            // записываем кто создает заявку
             request.CreateUserId = user.Id;
             var executorId = user.Id;
             request.Priority = Convert.ToInt32(Request.Form.GetValues("prio").FirstOrDefault());
@@ -133,28 +80,22 @@ namespace TelegramHelpDesk.Controllers
                 request.ExecutorId = null;
                 request.DepartmentId = user.DepartmentId;
             }
-            //получаем время октрытия
             DateTime current = DateTime.Now;
             var LifecycleId = request.Id;
-            // указываем статус у заявки
             if (request.ExecutorId == null)
             {
                 request.Status = (int)RequestStatus.Opened;
-                //Создаем запись о жизненом цикле заявки
                 Lifecycle newLifecycle = new Lifecycle() { Opened = current, Id = LifecycleId };
                 request.LifecycleId = LifecycleId;
                 request.Lifecycle = newLifecycle;
-                //Добавляем жизенный цикл заявки
                 db.Lifecycles.Add(newLifecycle);
             }
             else
             {
                 request.Status = (int)RequestStatus.Proccesing;
-                //Создаем запись о жизненом цикле заявки
                 Lifecycle newLifecycle = new Lifecycle() { Opened = current, Proccesing = current, Id = LifecycleId };
                 request.LifecycleId = LifecycleId;
                 request.Lifecycle = newLifecycle;
-                //Добавляем жизенный цикл заявки
                 db.Lifecycles.Add(newLifecycle);
             }
 
@@ -168,7 +109,7 @@ namespace TelegramHelpDesk.Controllers
                 error.SaveAs(Server.MapPath("~/Files/" + path));
                 request.File = path;
             }
-            //Добавляем заявку
+  
 
             db.AppTasks.Add(request);
             db.SaveChanges();
@@ -185,12 +126,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId)
+                .Include(r => r.Category) 
+                .Include(r => r.Lifecycle) 
+                .Include(r => r.Executor) 
                 .Where(r => r.Status == 4)
-                .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Opened);
             
             return View("DistrictTasks",requests.ToPagedList(pageNumber, pageSize));
         }
@@ -203,12 +144,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor) 
                 .Where(r => r.Status == 4)
-                .OrderByDescending(r => r.Lifecycle.Closed); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Closed);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -222,17 +163,18 @@ namespace TelegramHelpDesk.Controllers
             int pageSize = 10;
 
             var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId)
-                .Where(r=>r.ExecutorId != null)//получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+                .Where(r=>r.ExecutorId != null)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 2 || r.Status == 3)
-                .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Opened); 
             
             return View("DistrictTasks", requests.ToPagedList(pageNumber, pageSize));
         }
 
         [HttpGet]
+        [Authorize(Roles = "Модератор")]
         public ActionResult inprogress_Tasks(int? page)
         {
             User user = db.Users.Where(m => m.Login == HttpContext.User.Identity.Name).First();
@@ -240,12 +182,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 2 || r.Status == 3)
-                .OrderByDescending(r => r.Lifecycle.Proccesing); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Proccesing); 
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -258,12 +200,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor) 
                 .Where(r => r.Status == 2)
-                .OrderByDescending(r => r.Lifecycle.Proccesing); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Proccesing);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -276,12 +218,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.Id) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.Id)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 2)
-                .OrderByDescending(r => r.Lifecycle.Proccesing); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Proccesing); 
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -294,12 +236,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status != 4)
-                .OrderByDescending(r => r.Lifecycle.Proccesing); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Proccesing);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -312,12 +254,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId)
+                .Include(r => r.Category) 
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status != 4)
-                .OrderByDescending(r => r.Lifecycle.Proccesing); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Proccesing); 
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -330,12 +272,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 1)
-                .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Opened);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
 
@@ -349,12 +291,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 1)
-                .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Opened); 
 
             return View("AllTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -367,13 +309,13 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.DepartmentId == user.DepartmentId)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 1)
                 .Where(r=>r.ExecutorId == null)
-                .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Opened); 
 
             return View("AllTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -387,12 +329,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor) 
                 .Where(r => r.Status == 3)
-                .OrderByDescending(r => r.Lifecycle.Checking); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Checking);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -405,12 +347,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                .Include(r => r.Category) // добавляем категории
-                .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                .Include(r => r.Executor) // добавляем данные о пользователях
+            var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                .Include(r => r.Category)
+                .Include(r => r.Lifecycle)
+                .Include(r => r.Executor)
                 .Where(r => r.Status == 3)
-                .OrderByDescending(r => r.Lifecycle.Checking); // упорядочиваем по дате по убыванию  
+                .OrderByDescending(r => r.Lifecycle.Checking);
 
             return View("MyTasks", requests.ToPagedList(pageNumber, pageSize));
         }
@@ -431,22 +373,19 @@ namespace TelegramHelpDesk.Controllers
             {
                 tasks = db.AppTasks.Select(r => r.Number).Max() + 1;
             }
-            // получаем текущего пользователя
+
             User user = db.Users.FirstOrDefault(m => m.Login == HttpContext.User.Identity.Name);
             if (user == null)
             {
                 return RedirectToAction("LogOff", "Account");
             }
-            //if (ModelState.IsValid)
-            //{
-                // присваиваем новый id заявке
+
                 request.Id = Guid.NewGuid();
                 request.Number = tasks;
                 District district = db.Districts.Find(Guid.Parse(request.Office));
                 request.District = district.DistrictName;
                 request.Office = district.OfficeName;
                 var requestId = request.Id;
-                // записываем кто создает заявку
                 request.CreateUserId = user.Id;
                 var executorId = user.Id;
                 request.Priority = Convert.ToInt32(Request.Form.GetValues("prio").FirstOrDefault());
@@ -460,32 +399,27 @@ namespace TelegramHelpDesk.Controllers
                     request.ExecutorId = null;
                     request.DepartmentId = user.DepartmentId;
                 }
-                //получаем время октрытия
+
                 DateTime current = DateTime.Now;
                 var LifecycleId = request.Id;
-                // указываем статус у заявки
+
                 if (request.ExecutorId == null)
                 {
                     request.Status = (int)RequestStatus.Opened;
-                    //Создаем запись о жизненом цикле заявки
                     Lifecycle newLifecycle = new Lifecycle() { Opened = current, Id = LifecycleId };
                     request.LifecycleId = LifecycleId;
                     request.Lifecycle = newLifecycle;
-                    //Добавляем жизенный цикл заявки
                     db.Lifecycles.Add(newLifecycle);
                 }
                 else
                 {
                     request.Status = (int)RequestStatus.Proccesing;
-                //Создаем запись о жизненом цикле заявки
-                Lifecycle newLifecycle = new Lifecycle() { Proccesing = current, Id = LifecycleId };
+                    Lifecycle newLifecycle = new Lifecycle() { Proccesing = current, Id = LifecycleId };
                     request.LifecycleId = LifecycleId;
                     request.Lifecycle = newLifecycle;
-                    //Добавляем жизенный цикл заявки
-                    db.Lifecycles.Add(newLifecycle);
 
-    
-            }
+                    db.Lifecycles.Add(newLifecycle);
+                }
 
                 // если получен файл
                 if (error != null)
@@ -497,17 +431,13 @@ namespace TelegramHelpDesk.Controllers
                     error.SaveAs(Server.MapPath("~/Files/" + path));
                     request.File = path;
                 }
-            //Добавляем заявку
+
 
                 db.AppTasks.Add(request);
                 db.SaveChanges();
 
                 //SendMessage("Добавлен новый объект");
                 return RedirectToAction("AllTasks");
-
-            //}
-
-            //return View("AllTasks");
         }
 
 
@@ -526,47 +456,40 @@ namespace TelegramHelpDesk.Controllers
                 tasks = db.AppTasks.Select(r => r.Number).Max() + 1;
             }
             
-            
-            // получаем текущего пользователя
             User user = db.Users.FirstOrDefault(m => m.Login == HttpContext.User.Identity.Name);
             if (user == null)
             {
                 return RedirectToAction("LogOff", "Account");
             }
-            //if (ModelState.IsValid)
-            //{
-                // присваиваем новый id заявке
-                request.Id = Guid.NewGuid();
+    
+            request.Id = Guid.NewGuid();
             request.Number = tasks;
             District district = db.Districts.Find(Guid.Parse(request.Office));
             request.District = district.DistrictName;
             request.Office = district.OfficeName;
-            
             request.Category = request.Category;
             request.Comment = request.Comment;
             request.DistrictId = request.DistrictId;
-            // записываем кто создает заявку
             request.CreateDistrictId = user.DistrictId;   
             request.ExecutorId = null;
-            request.DepartmentId = request.DepartmentId; // тут короче надо кому назначается. какому отделу
+            request.DepartmentId = request.DepartmentId;
             request.Priority = 1;
             
             var subject = db.Categorys.Find(request.CategoryId);
             request.Subject = subject.Name;
             
-            //получаем время октрытия
+
             DateTime current = DateTime.Now;
             var LifecycleId = request.Id;
             
                 request.Status = (int)RequestStatus.Opened;
-                //Создаем запись о жизненом цикле заявки
+ 
                 Lifecycle newLifecycle = new Lifecycle() { Opened = current, Id = LifecycleId };
                 request.LifecycleId = LifecycleId;
                 request.Lifecycle = newLifecycle;
-                //Добавляем жизенный цикл заявки
+
                 db.Lifecycles.Add(newLifecycle);
             
-                // если получен файл
                 if (error != null)
                 {
                     //Получаем расширение
@@ -583,10 +506,6 @@ namespace TelegramHelpDesk.Controllers
 
             //SendMessage("Добавлен новый объект");
             return RedirectToAction("DistrictMain");
-
-            //}
-
-            //return View("DistrictMain");
         }
 
         [HttpPost]
@@ -651,11 +570,7 @@ namespace TelegramHelpDesk.Controllers
         }
         [HttpGet]
         public ActionResult TaskView(Guid id) {
-            //var requests = db.AppTasks.Where(r => r.Id == id) //получаем заявки для текущего пользователя
-            //    .Include(r => r.Category) // добавляем категории
-            //    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-            //    .Include(r => r.Executor); // добавляем данные о пользователях
-
+           
             User user = db.Users.FirstOrDefault(m => m.Login == HttpContext.User.Identity.Name);
 
             var executors = db.Users.Where(r => r.DepartmentId == user.DepartmentId).Where(r => r.Role.Name.ToString() != "Модератор");
@@ -677,24 +592,24 @@ namespace TelegramHelpDesk.Controllers
 
             if (role == "Исполнитель")
             {
-                var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                    .Include(r => r.Category) // добавляем категории
-                    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                    .Include(r => r.Executor) // добавляем данные о пользователях
+                var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                    .Include(r => r.Category)
+                    .Include(r => r.Lifecycle)
+                    .Include(r => r.Executor)
                     .Where(r => r.Status != 4)
-                    .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию 
+                    .OrderByDescending(r => r.Lifecycle.Opened);
 
                 return View(requests.ToPagedList(pageNumber, pageSize));
 
             }
             else
             {
-                var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id) //получаем заявки для текущего пользователя
-                    .Include(r => r.Category) // добавляем категории
-                    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                    .Include(r => r.Executor) // добавляем данные о пользователях
+                var requests = db.AppTasks.Where(r => r.ExecutorId == user.Id)
+                    .Include(r => r.Category) 
+                    .Include(r => r.Lifecycle)
+                    .Include(r => r.Executor) 
                     .Where(r => r.Status != 4)
-                    .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                    .OrderByDescending(r => r.Lifecycle.Opened);   
 
              return View(requests.ToPagedList(pageNumber, pageSize));
             }
@@ -709,12 +624,12 @@ namespace TelegramHelpDesk.Controllers
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-                var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId) //получаем заявки для текущего пользователя
-                    .Include(r => r.Category) // добавляем категории
-                    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                    .Include(r => r.Executor) // добавляем данные о пользователях
+                var requests = db.AppTasks.Where(r => r.CreateDistrictId == user.DistrictId)
+                    .Include(r => r.Category) 
+                    .Include(r => r.Lifecycle) 
+                    .Include(r => r.Executor) 
                     .Where(r => r.Status != 4)
-                    .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию  
+                    .OrderByDescending(r => r.Lifecycle.Opened); 
   
 
             return View(requests.ToPagedList(pageNumber, pageSize));
@@ -731,10 +646,10 @@ namespace TelegramHelpDesk.Controllers
 
             if (role == "Исполнитель")
             {
-                var requests = db.AppTasks.Include(r => r.Category) // добавляем категории
-                    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                    .Include(r => r.Executor) // добавляем данные о пользователях
-                    .OrderBy(r => r.Lifecycle.Opened) // упорядочиваем по дате по убыванию   
+                var requests = db.AppTasks.Include(r => r.Category)
+                    .Include(r => r.Lifecycle) 
+                    .Include(r => r.Executor) 
+                    .OrderBy(r => r.Lifecycle.Opened) 
                     .Where(r => r.Status == (int)RequestStatus.Opened)
                     .Where(r => r.ExecutorId==null)
                     .Where(r => r.DepartmentId == user.DepartmentId);
@@ -744,10 +659,10 @@ namespace TelegramHelpDesk.Controllers
             else if (role == "Модератор")
             {
 
-                var requests = db.AppTasks.Include(r => r.Category) // добавляем категории
-                    .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                    .Include(r => r.Executor) // добавляем данные о пользователях
-                    .OrderByDescending(r => r.Lifecycle.Opened) // упорядочиваем по дате по убыванию
+                var requests = db.AppTasks.Include(r => r.Category) 
+                    .Include(r => r.Lifecycle) 
+                    .Include(r => r.Executor) 
+                    .OrderByDescending(r => r.Lifecycle.Opened)
                     .Where(r => r.Status != 4)
                     .Where(r => r.DepartmentId == user.DepartmentId);
 
@@ -755,19 +670,19 @@ namespace TelegramHelpDesk.Controllers
             }
             else if (role == "Администратор")
             {
-                var requests = db.AppTasks.Include(r => r.Category) // добавляем категории
-                   .Include(r => r.Lifecycle) // добавляем жизненный цикл заявок
-                   .Include(r => r.Executor) // добавляем данные о пользователях
-                   .OrderByDescending(r => r.Lifecycle.Opened); // упорядочиваем по дате по убыванию
+                var requests = db.AppTasks.Include(r => r.Category) 
+                   .Include(r => r.Lifecycle) 
+                   .Include(r => r.Executor) 
+                   .OrderByDescending(r => r.Lifecycle.Opened);
 
                 return View(requests.ToPagedList(pageNumber, pageSize));
             }
             return RedirectToAction("LogOff", "Account");
         }
 
-        public ActionResult CentrOfKnowledge()
+        public ActionResult HelpInfo()
         {
-            return View("CentrOfKnowledge");
+            return View("HelpInfo");
         }
         public ActionResult Main()
         {
@@ -792,8 +707,6 @@ namespace TelegramHelpDesk.Controllers
                 var categories = db.Categorys
                     .Where(c => c.DepartmentId == user.DepartmentId)
                     .ToList();
-               
-                
 
                     string selectedIndex = "г. Калуга"; //db.Districts.Select(d=>d.DistrictName).First();
 
@@ -830,10 +743,6 @@ namespace TelegramHelpDesk.Controllers
                     ViewBag.Departments = new SelectList(departments, "Id", "Name");
                     ViewBag.Categories = new SelectList(db.Categorys, "Id", "Name");
 
-                    //Department dept = db.Departments.FirstOrDefault(d => d.Id == user.DepartmentId);
-
-                    //ViewBag.Users = new SelectList(db.Users.Where(d => d.DepartmentId == dept.Id), "Id", "Name");
-                
                 return View();
             }
             return RedirectToAction("LogOff", "Account");
@@ -919,8 +828,8 @@ namespace TelegramHelpDesk.Controllers
             db.SaveChanges();
             return View("DistrictMain");
         }
-
-        public ActionResult AddComment(Comment comment,Guid task)
+        
+        public ActionResult AddComment(Comment comment, Guid taskId)
         {
             
             // получаем текущего пользователя
@@ -929,19 +838,17 @@ namespace TelegramHelpDesk.Controllers
             {
                 return RedirectToAction("LogOff", "Account");
             }
-            //if (ModelState.IsValid)
-            //{
-            // присваиваем новый id заявке
+
             comment.Id = Guid.NewGuid();
-            comment.Date = DateTime.Now;
-            comment.Text = comment.Text;
             comment.UserId = user.Id;
-            comment.TaskId = task;
+            comment.TaskId = taskId;
+            comment.Text = comment.Text;
+            comment.Date = DateTime.Now;
            
             db.Comments.Add(comment);
             db.SaveChanges();
 
-            //SendMessage("Добавлен новый объект");
+            SendMessage("Добавлен новый комментарий");
             return RedirectToRoute(Request.Url);
 
         }

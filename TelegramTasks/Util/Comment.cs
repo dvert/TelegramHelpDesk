@@ -7,9 +7,9 @@ namespace HelpDeskBot.Util
     {
         public Guid? Id { get; set; }
         public Guid? UserId { get; set; }
-        
+
         public Guid? TaskId { get; set; }
-        
+
         [Required(ErrorMessage = "Поле 'комментарий' должно быть заполнено'")]
         [Display(Name = "Комментарий")]
         [MaxLength(300, ErrorMessage = "Превышена максимальная длина записи")]

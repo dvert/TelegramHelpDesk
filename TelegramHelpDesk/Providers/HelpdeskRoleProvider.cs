@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Security;
-using System.Web.Helpers;
-using System.Web.WebPages;
 using TelegramHelpDesk.Models;
 
 
@@ -48,16 +44,13 @@ namespace TelegramHelpDesk.Providers
             {
                 try
                 {
-                    //получаем пользователя
                     User user = (from u in _db.Users
                                  where u.Login == username
                                  select u).FirstOrDefault();
                     if (user != null)
                     {
-                        //получаем роль
                         Role userRole = _db.Roles.Find(user.RoleId);
 
-                        //сравниваем
                         if(userRole != null && userRole.Name == roleName)
                         {
                             outputResult = true;

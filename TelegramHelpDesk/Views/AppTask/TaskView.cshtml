@@ -122,7 +122,7 @@
                                         @if (Model.CreateDistrictId != null)
                                         {
                                             <div>
-                                                <small class="">@Html.DisplayName(db.Districts.Where(r => r.DistrictId == Model.CreateDistrictId).Select(r => r.DistrictName).FirstOrDefault())</small>
+                                                <small class="">@Html.DisplayName(db.Departments.Where(r => r.Id == Model.DepartmentId).Select(r => r.Name).FirstOrDefault())</small>
                                             </div>
                                         }
                                         else if (Model.CreateUserId != null)
@@ -371,7 +371,6 @@
                             </div>
                         </div>
 
-                        ///////////////////////////////////////////////////////////
 
                         <div id="refer_to" class="col-md-12 panel panel-default" style="padding: 10px; margin-top: 20px; margin-bottom: 0px;">
 
@@ -402,8 +401,6 @@
                             </div>
                         </div>
 
-
-                        //////////////////////////////////////////////////////////////////////////////
 
                         <div id="change_prio" class="col-md-12 panel panel-default" style="padding: 10px; margin-top: 20px; margin-bottom: 0px;">
 
@@ -471,7 +468,6 @@
                         <li><a href="#profile" data-toggle="tab"><i class="fa fa-list"></i> История изменений</a></li>
                     </ul>
 
-                    <!-- Tab panes -->
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="home">
                             <div class="col-md-12" style=" padding-left: 0px; padding-right: 0px; ">
@@ -486,7 +482,6 @@
                                             <div class="row" id="comment_body" style="max-height: 400px; overflow-y: scroll;">
 
                                             </div>
-
                                         </div>
                                         <hr>
 
@@ -494,9 +489,10 @@
                                             <div class="controls">
                                                 <div class="form-group" id="for_msg">
                                                     <label for="msg" class="col-sm-3 control-label"><small>Ваш комментарий:</small></label>
-                                                    @using (Html.BeginForm("AddComment", "AppTask", FormMethod.Post)) {
+                                                    @using (Html.BeginForm("AddComment", "AppTask", FormMethod.Post))
+                                                    {
 
-                                                        @Html.Hidden("task", Model.Id)
+                                                        @Html.Hidden("taskId", Model.Id)
 
 
                                                         <div class="col-sm-12" style="">
@@ -505,19 +501,15 @@
 
                                                     </div>
 
-                                              
+
                                                         <div class="col-sm-12" style=""><button type="submit" name="action" class="btn btn-default btn-sm pull-right">Отправить</button>
-                                                            @*<div class="col-sm-12" style=""><button id="do_comment" user="1" value="1" type="submit" name="action" class="btn btn-default btn-sm pull-right">Отправить</button>*@
-                                                    </div>
-                                                }
                                                 </div>
+                                                    }
                                                 <div class="help-block" style="margin:0px;"></div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="tab-pane fade" id="profile">
@@ -539,24 +531,16 @@
                                                         <div style="text-align: center;" ><small>Действие 	</small></div></th>
                                                     <th>
                                                         <div style="text-align: center;" ><small>Описание	</small></div></th>
-
-
                                                 </tr>
                                             </thead>
-
-                                            
                                         </table>
                                     </div>
                                 </div>
                             </div>
-
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
     </div></div></div>

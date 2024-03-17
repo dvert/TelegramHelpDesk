@@ -118,10 +118,7 @@
 
                              @if (role == "Пользователь")
                              {
-                                @*<div class="col-md-4 col-xs-4"><center>	<strong class="text-warning" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, которые распределены и выполняются"> @progress</strong><br><small><i class='fa fa-lock'></i> @Html.ActionLink("заявок в работе", "inprogressDistrict_Tasks") </small>	</center></div>
-
-                                <div class="col-md-4 col-xs-4"><center>	<strong class="text-primary" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, созданные Вами и остались не выполненными">@outtasks</strong><br><small><i class="fa fa-upload"></i> @Html.ActionLink("исходящие заявки", "DistrictTasks") </small> </center></div>*@
-
+                              
                                 <div class="col-md-4 col-xs-4"><center><strong class="text-danger" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Ваши заявки, находящиеся в работе">@in_progressUser</strong><br><small><i class="fa fa-download"></i> @Html.ActionLink("заявки в работе", "inprogressUser_Tasks") </small></center></div>
 
                                 <div class="col-md-4 col-xs-4"><center>	<strong class="text-warning" style="font-weight: bold; font-style: normal; font-variant: normal; font-size: 20px;" data-toggle="tooltip" data-placement="top" title="Заявки, созданные Вами и остались не выполненными" id="d_label_2">@out_goingUser</strong><br><small><i class='fa fa-lock'></i> @Html.ActionLink("исходящие заявки", "outgoingUser_Tasks") </small>	</center></div>
@@ -157,7 +154,7 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <a href="/AppTask/CentrOfKnowledge"><i class="fa fa-globe"></i> Последнее из Центра Знаний</a>
+                            <a href="/AppTask/HelpInfo"><i class="fa fa-globe"></i> Последнее из справочной информации</a>
                         </div>
                         <div class="panel-body">
                             <table class="table table-hover" style="margin-bottom: 0px;" id="">
@@ -173,33 +170,7 @@
                 </div>
 
             </div>
-        </div>
-
-        @*<div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a href="/AppTask/AllTasks"><i class="fa fa-list-alt"></i> Последние исходящие заявки</a><span class="pull-right">
-                        <div class="btn-group btn-group-xs">
-                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">5</button>
-                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">10</button>
-                            <button id="dashboard_set_ticket" type="button" class="btn btn-default">15</button>
-                        </div>
-
-                    </span>
-                </div>
-                <div class="panel-body">
-
-                    <div id="spinner" class="well well-large well-transparent lead">
-                        <center><i class="fa fa-spinner fa-spin icon-2x"></i> Идет загрузка ...</center>
-                    </div>
-
-                    <div id="dashboard_t"></div>
-
-
-                </div>
-            </div>
-        </div>*@
-
+        </div> 
     </div>
 
 </div>

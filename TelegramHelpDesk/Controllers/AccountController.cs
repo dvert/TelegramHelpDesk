@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
+﻿using System.Data;
 using System.Linq;
-using System.Management.Instrumentation;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using TelegramHelpDesk.Models;
-using System.Windows.Forms;
 
 namespace TelegramHelpDesk.Controllers
 {
@@ -29,22 +22,13 @@ namespace TelegramHelpDesk.Controllers
                 if (ValidateUser(model.UserName, model.Password))
                 {
                     FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
-                    //if (Url.IsLocalUrl(returnUrl)) {
 
                         var role = Roles.GetRolesForUser(model.UserName).GetValue(0).ToString();
 
                         if (role == "Пользователь") {
                             return RedirectToAction("DistrictMain", "AppTask");
                         }
-                        else if (role == "Модератор")
-                        {
-                            return RedirectToAction("Main", "AppTask");
-                        }
-                        else if (role == "Исполнитель")
-                        {
-                            return RedirectToAction("Main", "AppTask");
-                        }
-                        else if (role == "Администратор")
+                        else if (role == "Модератор" || role == "Исполнитель" || role == "Администратор")
                         {
                             return RedirectToAction("Main", "AppTask");
                         }
@@ -52,12 +36,6 @@ namespace TelegramHelpDesk.Controllers
                             return Redirect(returnUrl);
                         }
                     }
-                    
-                    //else
-                    //{
-                    //        return RedirectToAction("Main", "AppTask");
-                    //}
-                //}
                 else
                 {
                     ModelState.AddModelError("", "Неправильный пароль или логин");
@@ -79,7 +57,6 @@ namespace TelegramHelpDesk.Controllers
       
             using (HelpdeskContext _db = new HelpdeskContext()) {
 
-                //Clipboard.SetText(_db.Users.Count().ToString());
                 try
                 {
                         User user = (from u in _db.Users

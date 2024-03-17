@@ -54,12 +54,12 @@ namespace TelegramHelpDesk.Models
         // ID создателя
         public Guid? CreateUserId { get; set; }
         public User CreateUser { get; set; }
-        public Guid? CreateDistrictId  {get; set; }
+        public Guid? CreateDistrictId { get; set; }
         public District CreateDistrict { get; set; }
         public Guid? DepartmentId { get; set; }
         //Ссылка на пользователя - навигационное свойство
         public Department Department { get; set; }
-       //Ссылка на пользователя - навигационное свойство
+        //Ссылка на пользователя - навигационное свойство
         public Guid? DistrictId { get; set; }
         [DataType(DataType.Date)]
         public DateTime? LastUpdate { get; set; }
@@ -79,7 +79,7 @@ namespace TelegramHelpDesk.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         public DateTime Opened { get; set; }
-       // Дата обработки
+        // Дата обработки
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         public DateTime? Proccesing { get; set; }

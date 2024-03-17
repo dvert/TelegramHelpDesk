@@ -93,8 +93,6 @@
 </style>
 <div id="contentposition">
 
-    @*<input type="hidden" id="main_last_new_ticket" value="2017-12-15 08:21:39">*@
-
     <div class="container">
         <div class="page-header" style="margin-top: -15px;">
 
@@ -125,19 +123,6 @@
                 </div>
             </div>
         </div>
-        @*<div class="btn-group btn-group-justified" style="width: 95%">
-            <a class="btn btn-default btn-sm active" role="button" href="?in">
-                <i class="fa fa-download"></i> Входящие
-                <span id="label_list_in"></span>
-            </a>
-            <a class="btn btn-default btn-sm " role="button" id="link_out" href="?out">
-                <i class="fa fa-upload"></i> Исходящие
-                <span id="label_list_out"></span>
-            </a>
-            <a class="btn btn-default btn-sm " role="button" href="?arch">
-                <i class="fa fa-archive"></i> Архив
-            </a>
-        </div>*@
         <br>
 
 
@@ -198,7 +183,7 @@
                             @if (item.CreateDistrictId != null)
                             {
                                 <div>
-                                    <small class="">@Html.DisplayName(db.Districts.Where(r => r.DistrictId == item.CreateDistrictId).Select(r => r.DistrictName).FirstOrDefault())</small>
+                                    <small class="">@Html.DisplayName(db.Departments.Where(r => r.Id == item.DepartmentId).Select(r => r.Name).FirstOrDefault())</small>
                                 </div>
                             }
                             else if (item.CreateUserId != null)
@@ -239,7 +224,6 @@
                             {
                             <td>
                                 @using (Html.BeginForm("Assign", "AppTask", FormMethod.Post)) {
-                                @*@Html.ActionLink("Назначить себе", "Assign", new { id = item.Id })*@
                                    
                                         @Html.Hidden("requestId", item.Id)
                                         <div class="btn-group">

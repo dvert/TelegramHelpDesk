@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using TelegramHelpDesk.Models;
-using System.Data.Entity;
 
 namespace TelegramHelpDesk.Controllers
 {
@@ -12,7 +9,6 @@ namespace TelegramHelpDesk.Controllers
     {
         HelpdeskContext db = new HelpdeskContext();
 
-        //представление для просмотра отдела
         [HttpGet]
         public ActionResult Departments()
         {
@@ -20,7 +16,6 @@ namespace TelegramHelpDesk.Controllers
             return View();
         }
 
-        //добавление нового отдела
         [HttpPost]
         public ActionResult Departments(Department depo)
         {
@@ -34,7 +29,6 @@ namespace TelegramHelpDesk.Controllers
             return View(depo);
         }
 
-        //удаление отдела
         public ActionResult DeleteDepartment(Guid id)
         {
             Department depo = db.Departments.Find(id);
@@ -43,7 +37,6 @@ namespace TelegramHelpDesk.Controllers
             return RedirectToAction("Departments");
         }
 
-        //представление для просмотра категорий заявок
         [HttpGet]
         public ActionResult Categories()
         {
@@ -54,7 +47,6 @@ namespace TelegramHelpDesk.Controllers
             return View();
         }
 
-        //добавление новых категорий
         [HttpPost]
         public ActionResult Categories(Category cat)
         {
@@ -73,7 +65,6 @@ namespace TelegramHelpDesk.Controllers
             return View();
         }
 
-        //удаление категории
         public ActionResult DeleteCategory(Guid id)
         {
             Category cat = db.Categorys.Find(id);
@@ -82,7 +73,6 @@ namespace TelegramHelpDesk.Controllers
             return RedirectToAction("Categories");
         }
 
-        // прредставление для просмотра районов и офисов
         [HttpGet]
         public ActionResult Districts()
         {
@@ -96,7 +86,6 @@ namespace TelegramHelpDesk.Controllers
             return View();
         }
 
-        //добавление районов и офисов
         [HttpPost]
         public ActionResult Districts(District district)
         {
@@ -115,7 +104,6 @@ namespace TelegramHelpDesk.Controllers
             return View(district);
         }
 
-        // Удаление районов и офисов
         public ActionResult DeleteDistrict(Guid id)
         {
             District district = db.Districts.Find(id);

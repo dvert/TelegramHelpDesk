@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
 
 namespace HelpDeskBot.Util
 {
@@ -11,13 +14,19 @@ namespace HelpDeskBot.Util
         // Номер чата
         public int ChatId { get; set; }
         // Район
+        [Required(ErrorMessage = "Поле 'Название заявки' должно быть заполнено")]
         [Display(Name = "Название района")]
+        [MaxLength(100, ErrorMessage = "Превышена максимальная длина записи")]
         public string District { get; set; }
         // Филиал
-        [Display(Name = "Название офиса")]
+        [Required(ErrorMessage = "Поле 'Название заявки' должно быть заполнено")]
+        [Display(Name = "Название района")]
+        [MaxLength(100, ErrorMessage = "Превышена максимальная длина записи")]
         public string Office { get; set; }
         // Описание
+        [Required(ErrorMessage = "Поле 'Описание' должно быть заполнено'")]
         [Display(Name = "Описание")]
+        [MaxLength(300, ErrorMessage = "Превышена максимальная длина записи")]
         public string Description { get; set; }
         // Статус заявки
         [Display(Name = "Статус")]

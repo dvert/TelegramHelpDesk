@@ -101,8 +101,6 @@
 
 <div id="contentposition">
 
-    @*<input type="hidden" id="main_last_new_ticket" value="2017-12-15 08:21:39">*@
-
     <div class="container">
         <div class="page-header" style="margin-top: -15px;">
 
@@ -170,7 +168,6 @@
                     <th><div style="text-align: center;"><div id="sort_subj" style="width:auto" action="">Тема</div></div></th>
                     <th><div style="text-align: center;">Создана</div></th>
                     <th><div style="text-align: center;"><div id="sort_init" action="">Автор</div></div></th>
-                    @*<th><div style="text-align: center;">Исполнитель</div></th>*@
                     <th><div style="text-align: center;">Статус</div></th>
 
                 </tr>
@@ -212,7 +209,7 @@
                             @if (item.CreateDistrictId != null)
                             {
                                 <div>
-                                    <small class="">@Html.DisplayName(db.Districts.Where(r => r.DistrictId == item.CreateDistrictId).Select(r => r.DistrictName).FirstOrDefault())</small>
+                                    <small class="">@Html.DisplayName(db.Departments.Where(r => r.Id== item.DepartmentId).Select(r => r.Name).FirstOrDefault())</small>
                                 </div>
                             }
                             else if (item.CreateUserId != null)
@@ -222,11 +219,7 @@
                                 </div>
                             }
                         </td>
-                        @*<td style="vertical-align: middle;">
-                            <small class="">
-                                <div class="">@Html.DisplayFor(modelItem => item.Executor.)</div>
-                            </small>
-                        </td>*@
+
                         <td style="vertical-align: middle;">
                             <small>
                                 @if (item.Status == (int)RequestStatus.Opened)
@@ -248,7 +241,6 @@
                                 }
                             </small>
                         </td>
-                      
                     </tr>
                 }
             </tbody>
@@ -267,7 +259,4 @@
                                     LinkToLastPageFormat = ">>"
                                 })
         </div>
-
-
-
     </div>

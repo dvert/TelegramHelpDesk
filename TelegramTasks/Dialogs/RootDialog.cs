@@ -1,9 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using System.Web.Services.Description;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Scorables;
 using Newtonsoft.Json.Linq;
@@ -21,9 +18,7 @@ namespace HelpDeskBot.Dialogs
     using Util;
     using System.Net.Http;
     using System.Net;
-    using HelpDeskBot.Controllers;
     using TableDependency.SqlClient;
-    using TableDependency.EventArgs;
     using TableDependency;
 
     [Serializable]
@@ -73,7 +68,6 @@ namespace HelpDeskBot.Dialogs
                 else if (obj["text"].ToString() == "Нет") {
 
                     tasks.Status = 3;
-                    //lifecycle.Proccesing = DateTime.Now;
                     db.SaveChanges();
 
                     await context.PostAsync("Ваша заявка была возвращена для дальнейшего выполнения");
@@ -194,7 +188,6 @@ namespace HelpDeskBot.Dialogs
             }
             var a = context.PostAsync("Вы отправили мне файл, он успешно добавлен к заявке!");
             context.Done(a);
-            //PromptDialog.Text(context, this.CategoryMessageReceivedAsync, "Вы отправили мне файл, он успешно добавлен к заявке!");
         }
 
         public async Task CategoryMessageReceivedAsync(IDialogContext context, IAwaitable<string> argument)
@@ -234,15 +227,12 @@ namespace HelpDeskBot.Dialogs
                 IsGroup = resume.IsGroup
             };
 
-
-            //Добавляем жизенный цикл заявки
             Lifecycle newLifecycle = new Lifecycle() { Opened = DateTime.Now, Id = lifecycleId };
 
             db.TelegramTasks.Add(telegramTask);
             db.Lifecycles.Add(newLifecycle);
             db.SaveChanges();
 
-   // TODO: исправить костыль
             Department dep = db.Departments.Where(m => m.Name == "ИТ отдел").First();
 
             AppTask appTask = new AppTask()
@@ -257,7 +247,7 @@ namespace HelpDeskBot.Dialogs
                 LifecycleId = lifecycleId,
                 Subject = this.subject,
                 File = path,
-                DepartmentId = dep.Id // тут короче guid для IT отдела
+                DepartmentId = dep.Id
         };
 
             
@@ -340,8 +330,7 @@ namespace HelpDeskBot.Dialogs
                         Items = new List<CardElement>
                         {
                             new Image
-                            {
-                                Url = "https://raw.githubusercontent.com/GeekTrainer/help-desk-bot-lab/master/assets/botimages/head-smiling-medium.png",
+                            { 
                                 Size = ImageSize.Small,
                                 HorizontalAlignment = HorizontalAlignment.Right
                             }
@@ -431,7 +420,6 @@ namespace HelpDeskBot.Dialogs
                         {
                             new Image
                             {
-                                Url = "https://raw.githubusercontent.com/GeekTrainer/help-desk-bot-lab/master/assets/botimages/head-smiling-medium.png",
                                 Size = ImageSize.Small,
                                 HorizontalAlignment = HorizontalAlignment.Right
                             }
@@ -516,8 +504,7 @@ namespace HelpDeskBot.Dialogs
                         {
                             new Image
                             {
-                                Url = "https://raw.githubusercontent.com/GeekTrainer/help-desk-bot-lab/master/assets/botimages/head-smiling-medium.png",
-                                Size = ImageSize.Small,
+                                 Size = ImageSize.Small,
                                 HorizontalAlignment = HorizontalAlignment.Right
                             }
 

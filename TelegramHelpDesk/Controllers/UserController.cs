@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using TelegramHelpDesk.Models;
 using EntityState = System.Data.Entity.EntityState;
@@ -11,12 +10,11 @@ using EntityState = System.Data.Entity.EntityState;
 
 namespace TelegramHelpDesk.Controllers
 {
-    //[Authorize(Roles = "Администратор, Модератор, Исполнитель")]
+
     public class UserController : Controller
     {
         private HelpdeskContext db = new HelpdeskContext();
 
-        // отображение списка пользователей
         [HttpGet]
         public ActionResult Index()
         {
@@ -25,7 +23,6 @@ namespace TelegramHelpDesk.Controllers
             if (HttpContext.User.IsInRole("Администратор")) {
 
                 List<Department> departments = db.Departments.ToList();
-                //Добавляем в список возможность выбора всех
                 departments.Insert(0, new Department { Name = "Все", Id = Guid.Empty });
                 ViewBag.Departments = new SelectList(departments, "Id", "Name");
 
@@ -40,7 +37,6 @@ namespace TelegramHelpDesk.Controllers
                 users = db.Users.Include(u => u.Department).Include(u => u.Role).ToList().FindAll(u => u.Name != "Администратор");
 
                 List<Department> departments = db.Departments.ToList().FindAll(u => u.Name != "Администратор");
-                //Добавляем в список возможность выбора всех
                 departments.Insert(0, new Department { Name = "Все", Id = Guid.Empty });
                 ViewBag.Departments = new SelectList(departments, "Id", "Name");
 
@@ -54,7 +50,6 @@ namespace TelegramHelpDesk.Controllers
             return View(users);
         }
 
-        // поиск пользователей по отделу и статусу
         [HttpPost]
         public ActionResult Index(Guid department, Guid role)
         {
@@ -83,7 +78,6 @@ namespace TelegramHelpDesk.Controllers
             }
 
             List<Department> departments = db.Departments.ToList();
-            //Добавляем в список возможность выбора всех
             departments.Insert(0, new Department { Name = "Все", Id = Guid.Empty });
             ViewBag.Departments = new SelectList(departments, "Id", "Name");
 
@@ -94,7 +88,6 @@ namespace TelegramHelpDesk.Controllers
             return View(allUsers.ToList());
         }
 
-        // При создании нового пользователя передаем в представление список отделов и ролей
         [HttpGet]
         [Authorize(Roles = "Администратор")]
         public ActionResult Create()

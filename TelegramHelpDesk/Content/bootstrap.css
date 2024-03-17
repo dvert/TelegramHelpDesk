@@ -277,7 +277,7 @@ table {
   .navbar {
     display: none;
   }
-
+  .table td,
   .table th {
     background-color: #fff !important;
   }
@@ -1588,7 +1588,7 @@ table th[class*="col-"] {
   .table-responsive {
     width: 100%;
     margin-bottom: 15px;
-    /*overflow-x: scroll;*/
+    overflow-x: scroll;
     overflow-y: hidden;
     border: 1px solid #dddddd;
   }
@@ -4166,7 +4166,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
-.navbar-fixed-top1,
+.navbar-fixed-top,
 .navbar-fixed-bottom {
   position: fixed;
   right: 0;
@@ -4175,7 +4175,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 @media (min-width: 768px) {
-  .navbar-fixed-top1,
+  .navbar-fixed-top,
   .navbar-fixed-bottom {
     border-radius: 0;
   }

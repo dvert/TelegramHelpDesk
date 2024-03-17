@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TelegramHelpDesk.Models
 {
-    // модель отделы
+    // модель районы
     public class District
     {
         public Guid Id { get; set; }
